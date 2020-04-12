@@ -1,6 +1,7 @@
 package com.senzing.neo4j.connector.data.g2;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.json.JSONArray;
@@ -18,11 +19,14 @@ public class G2Entity {
   private static final String RESOLVED_ENTITY_TAG = "RESOLVED_ENTITY";
   private static final String RELATED_ENTITIES_TAG = "RELATED_ENTITIES";
   private static final String RECORDS_TAG = "RECORDS";
+  private static final String FEATURES_TAG = "FEATURES";
 
   // Entity fields
   public static final String ENTITY_ID_FIELD = "ENTITY_ID";
   private final static String ENTITY_NAME = "ENTITY_NAME";
   private static final String ENTITY_LENS_CODE = "LENS_CODE";
+  private static final String ENTITY_TYPE = "ENTITY_TYPE";
+  private static final String ENTITY_FEAT_DESC = "FEAT_DESC";
   private static final String[] ENTITY_FIELDS = { ENTITY_ID_FIELD, ENTITY_NAME, ENTITY_LENS_CODE };
 
   // Relationship fields
@@ -100,19 +104,40 @@ public class G2Entity {
 
     entityId = resolvedEntity.getLong(ENTITY_ID_FIELD);
 
-    // Gather entity features
-    populateFeatures(resolvedEntity, ENTITY_FIELDS, features);
+    // Gather entity features.
+    addEntityFeatures(resolvedEntity, ENTITY_FIELDS, features);
 
-    // Gather relationship features
+    // Gather relationship features.
     JSONArray relatedEntities = json.getJSONArray(RELATED_ENTITIES_TAG);
     populateFeatureMap(relatedEntities, RELATIONSHIP_FIELDS, ENTITY_ID_FIELD, relationships);
 
-    // Gather record information
+    // Gather record information.
     JSONArray jsonRecords = resolvedEntity.getJSONArray(RECORDS_TAG);
     populateFeatureMap(jsonRecords, RECORD_FIELDS, G2_RECORD_ID_FIELD, records);
     // All the records should have same entity type - grab the first one for the
     // entity type.
-    entityType = ((JSONObject) jsonRecords.get(0)).getString("ENTITY_TYPE");
+    entityType = ((JSONObject) jsonRecords.get(0)).getString(ENTITY_TYPE);
+  }
+
+  private void addEntityFeatures(final JSONObject resolvedEntity, final String[] fieldList,
+      Map<String, Object> features) throws org.json.JSONException {
+    // Add main features.
+    populateFeatures(resolvedEntity, ENTITY_FIELDS, features);
+    // Add any additional feature data.  They are in the "FEATURES" section.
+    JSONObject detailFeatures = resolvedEntity.getJSONObject(FEATURES_TAG);
+    if (detailFeatures != null) {
+      Iterator<String> keys = detailFeatures.keys();
+      while(keys.hasNext()) {
+          String key = keys.next();
+          if (detailFeatures.get(key) instanceof JSONArray) {
+            JSONArray featureArray = detailFeatures.getJSONArray(key);
+            for (int i = 0; i < featureArray.length(); i++) {
+              String featureDescription = featureArray.getJSONObject(i).getString(ENTITY_FEAT_DESC);
+              features.put(key + "-" + String.valueOf(i+1), featureDescription);
+            }
+         }
+      }
+    }
   }
 
   private static void populateFeatureMap(final JSONArray jsonArray, final String[] fieldList, String idField,

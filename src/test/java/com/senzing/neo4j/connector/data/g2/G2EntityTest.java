@@ -36,7 +36,7 @@ public class G2EntityTest {
     assertThat(g2Entity.getRecords(), is(notNullValue()));
     assertThat(g2Entity.getRelationships(), is(notNullValue()));
 
-    assertThat(g2Entity.getFeatures().size(), is(equalTo(3)));
+    assertThat(g2Entity.getFeatures().size(), is(equalTo(9)));
     assertThat(g2Entity.getRecords().size(), is(equalTo(3)));
     assertThat(g2Entity.getRelationships().size(), is(equalTo(3)));
 
