@@ -27,7 +27,7 @@ public class Neo4jService implements GraphService {
   private String relationshipG2Tag;
 
   private static final String DEFAULT_EDGE_TYPE = "KNOWS";
-  private static final String RECORD_EDGE_TYPE = "BELONGS_TO";
+  private static final String DEFAULT_RECORD_EDGE_TYPE = "BELONGS_TO";
   private static final String DEFAULT_EDGE_G2_TAG = "MATCH_KEY";
   private static final String EMPTY_STRING = "";
 
@@ -140,7 +140,7 @@ public class Neo4jService implements GraphService {
       Map<String, Object> relationship = entity.getRelationships().get(relEntityId);
 
       // Create relationship type. It is required since it labels the relationship.
-      String edgeString = createRelationshipType(relationship);
+      String edgeString = createRelationshipType(relationship, relationshipG2Tag);
       String relationshipType = edgeString.isEmpty() ? DEFAULT_EDGE_TYPE : edgeString;
 
       // Set up the query with each node as the criteria for end points of the
@@ -182,9 +182,18 @@ public class Neo4jService implements GraphService {
       fromCriteria.put(G2Entity.RECORD_ID_FIELD, g2Features.get(G2Entity.RECORD_ID_FIELD));
       fromCriteria.put(G2Entity.RECORD_DATA_SOURCE, g2Features.get(G2Entity.RECORD_DATA_SOURCE));
       Map<String, Object> toCriteria = new HashMap<>();
+      // Get the tag that defines the relationship.
       toCriteria.put(G2Entity.ENTITY_ID_FIELD, entity.getEntityId());
+      String relationshipTag = createRelationshipType(g2Features, relationshipG2Tag);
+      if (relationshipTag.isEmpty()) {
+        relationshipTag = createRelationshipType(g2Features, DEFAULT_EDGE_G2_TAG);
+      }
+      if (relationshipTag.isEmpty()) {
+        relationshipTag = DEFAULT_RECORD_EDGE_TYPE;
+      }
+
       CypherQuery recordRelQuery = CypherQueryGenerator.createRelationshipQuery(fromCriteria, toCriteria,
-          RECORD_EDGE_TYPE, g2Features);
+          relationshipTag.toString(), g2Features);
       relationshipQueries.add(recordRelQuery);
     }
 
@@ -194,14 +203,18 @@ public class Neo4jService implements GraphService {
     }
   }
 
-  private String createRelationshipType(Map<String, Object> relationship) {
-    Object tagValue = relationship.get(relationshipG2Tag);
+  private String createRelationshipType(Map<String, Object> relationship, String tag) {
+    Object tagValue = relationship.get(tag);
     if (tagValue == null || tagValue.toString().isEmpty()) {
       return EMPTY_STRING;
     }
-    // The back ticks are needed for special characters like '+', '-'. Neo4j rejects
-    // the string, otherwise.
-    return "`" + removeLeadingSymbols(relationship.get(relationshipG2Tag).toString()) + "`";
+    return wrapForSpecialCharacters(removeLeadingSymbols(tagValue.toString()));
+  }
+
+  // Adds back ticks around a string. They are needed for special characters like '+', '-'. Neo4j rejects
+  // the string otherwise.
+  String wrapForSpecialCharacters(String value) {
+    return "`" + value + "`";
   }
 
   // Removes any leading non-alphanumeric characters.

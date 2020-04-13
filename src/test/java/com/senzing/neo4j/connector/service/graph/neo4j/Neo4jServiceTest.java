@@ -44,7 +44,7 @@ public class Neo4jServiceTest {
     service  = Neo4jService.generateNeo4jService();
     g2Entity = new G2Entity(entityMessage);
   }
-  
+
   @Before
   public void setup() {
     new MockUp<Neo4jConnection>() {

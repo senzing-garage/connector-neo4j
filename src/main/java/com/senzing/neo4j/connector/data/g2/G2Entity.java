@@ -132,7 +132,7 @@ public class G2Entity {
           if (detailFeatures.get(key) instanceof JSONArray) {
             JSONArray featureArray = detailFeatures.getJSONArray(key);
             for (int i = 0; i < featureArray.length(); i++) {
-              String featureDescription = featureArray.getJSONObject(i).getString(ENTITY_FEAT_DESC);
+              Object featureDescription = featureArray.getJSONObject(i).get(ENTITY_FEAT_DESC);
               features.put(key + "-" + String.valueOf(i+1), featureDescription);
             }
          }
