@@ -119,6 +119,7 @@ public class G2Entity {
     entityType = ((JSONObject) jsonRecords.get(0)).getString(ENTITY_TYPE);
   }
 
+  @SuppressWarnings("unchecked")
   private void addEntityFeatures(final JSONObject resolvedEntity, final String[] fieldList,
       Map<String, Object> features) throws org.json.JSONException {
     // Add main features.
