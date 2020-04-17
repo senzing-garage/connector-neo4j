@@ -6,12 +6,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.neo4j.driver.v1.AuthToken;
-import org.neo4j.driver.v1.AuthTokens;
-import org.neo4j.driver.v1.Config;
-import org.neo4j.driver.v1.GraphDatabase;
-import org.neo4j.driver.v1.Session;
-import org.neo4j.driver.v1.Value;
+import org.neo4j.driver.AuthToken;
+import org.neo4j.driver.AuthTokens;
+import org.neo4j.driver.Driver;
+import org.neo4j.driver.Config;
+import org.neo4j.driver.GraphDatabase;
+import org.neo4j.driver.Session;
+import org.neo4j.driver.Value;
 
 import com.senzing.neo4j.connector.graphdatabase.GraphDatabaseConnection;
 import com.senzing.neo4j.connector.graphdatabase.exception.GraphDatabaseConnectionException;
@@ -21,7 +22,7 @@ import com.senzing.neo4j.connector.graphdatabase.exception.GraphDatabaseConnecti
  */
 public class Neo4jConnection implements GraphDatabaseConnection {
 
-  private org.neo4j.driver.v1.Driver driver;
+  private Driver driver;
 
   @Override
   public void connect(String uri) throws GraphDatabaseConnectionException {
@@ -42,8 +43,7 @@ public class Neo4jConnection implements GraphDatabaseConnection {
     AuthToken token = hasPassword ? AuthTokens.basic(user, password) : AuthTokens.none();
 
     // OT-TODO: add encryption option
-    driver = GraphDatabase.driver(uri, token,
-        Config.build().withEncryptionLevel(Config.EncryptionLevel.NONE).toConfig());
+    driver = GraphDatabase.driver(uri, token);
   }
 
   @Override

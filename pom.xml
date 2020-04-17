@@ -17,7 +17,7 @@
     <dependency>
       <groupId>org.neo4j.driver</groupId>
       <artifactId>neo4j-java-driver</artifactId>
-      <version>1.0.5</version>
+      <version>4.0.0</version>
     </dependency>
     <!-- end::bolt-dependency[] -->
     <dependency>
@@ -66,6 +66,15 @@
   </dependencies>
 
   <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+          <excludes>
+            <exclude>neo4jconnector.properties</exclude>
+          </excludes>
+        <filtering>false</filtering>
+      </resource>
+    </resources>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>

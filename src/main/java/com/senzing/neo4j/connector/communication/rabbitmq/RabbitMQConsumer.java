@@ -28,6 +28,8 @@ public class RabbitMQConsumer implements MessageConsumer {
 
   private final String HOST_NAME;
   private final String QUEUE_NAME;
+  private final String USER_NAME;
+  private final String PASSWORD;
 
   private MainService service;
 
@@ -51,10 +53,14 @@ public class RabbitMQConsumer implements MessageConsumer {
   private RabbitMQConsumer() throws MessageConsumerSetupException {
     String queueName;
     String queueHost;
+    String userName;
+    String password;
     try {
       AppConfiguration configuration = new AppConfiguration();
       queueName = configuration.getConfigValue(ConfigKeys.RABBITMQ_NAME);
       queueHost = configuration.getConfigValue(ConfigKeys.RABBITMQ_HOST);
+      userName = configuration.getConfigValue(ConfigKeys.RABBITMQ_USER_NAME);
+      password = configuration.getConfigValue(ConfigKeys.RABBITMQ_PASSWORD);
       if (queueName == null || queueHost == null) {
         List<String> configParams = new ArrayList<>();
         if (queueName == null) {
@@ -72,6 +78,8 @@ public class RabbitMQConsumer implements MessageConsumer {
     }
     HOST_NAME = queueHost;
     QUEUE_NAME = queueName;
+    USER_NAME = userName;
+    PASSWORD = password;
   }
 
   /**
@@ -90,6 +98,10 @@ public class RabbitMQConsumer implements MessageConsumer {
     try {
       ConnectionFactory factory = new ConnectionFactory();
       factory.setHost(HOST_NAME);
+      if (USER_NAME != null) {
+        factory.setUsername(USER_NAME);
+        factory.setPassword(PASSWORD);
+      }
       Connection connection = factory.newConnection();
       Channel channel = connection.createChannel();
 
