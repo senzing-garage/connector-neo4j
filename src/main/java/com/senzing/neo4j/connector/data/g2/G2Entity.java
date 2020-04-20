@@ -120,28 +120,28 @@ public class G2Entity {
   }
 
   @SuppressWarnings("unchecked")
-  private void addEntityFeatures(final JSONObject resolvedEntity, final String[] fieldList,
-      Map<String, Object> features) throws org.json.JSONException {
+  private void addEntityFeatures(JSONObject resolvedEntity, String[] fieldList, Map<String, Object> features)
+      throws org.json.JSONException {
     // Add main features.
     populateFeatures(resolvedEntity, ENTITY_FIELDS, features);
-    // Add any additional feature data.  They are in the "FEATURES" section.
+    // Add any additional feature data. They are in the "FEATURES" section.
     JSONObject detailFeatures = resolvedEntity.getJSONObject(FEATURES_TAG);
     if (detailFeatures != null) {
       Iterator<String> keys = detailFeatures.keys();
-      while(keys.hasNext()) {
-          String key = keys.next();
-          if (detailFeatures.get(key) instanceof JSONArray) {
-            JSONArray featureArray = detailFeatures.getJSONArray(key);
-            for (int i = 0; i < featureArray.length(); i++) {
-              Object featureDescription = featureArray.getJSONObject(i).get(ENTITY_FEAT_DESC);
-              features.put(key + "-" + String.valueOf(i+1), featureDescription);
-            }
-         }
+      while (keys.hasNext()) {
+        String key = keys.next();
+        if (detailFeatures.get(key) instanceof JSONArray) {
+          JSONArray featureArray = detailFeatures.getJSONArray(key);
+          for (int i = 0; i < featureArray.length(); i++) {
+            Object featureDescription = featureArray.getJSONObject(i).get(ENTITY_FEAT_DESC);
+            features.put(key + "-" + String.valueOf(i + 1), featureDescription);
+          }
+        }
       }
     }
   }
 
-  private static void populateFeatureMap(final JSONArray jsonArray, final String[] fieldList, String idField,
+  private static void populateFeatureMap(JSONArray jsonArray, String[] fieldList, String idField,
       Map<Long, Map<String, Object>> featureMap) throws org.json.JSONException {
     for (int i = 0; i < jsonArray.length(); i++) {
       JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -155,8 +155,8 @@ public class G2Entity {
     }
   }
 
-  private static void populateFeatures(final JSONObject jsonObject, final String[] fieldList,
-      Map<String, Object> features) throws org.json.JSONException {
+  private static void populateFeatures(JSONObject jsonObject, String[] fieldList, Map<String, Object> features)
+      throws org.json.JSONException {
     for (String fieldName : fieldList) {
       Object value = jsonObject.get(fieldName);
       if (value != null && !value.toString().isEmpty()) {
