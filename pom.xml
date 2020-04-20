@@ -9,7 +9,10 @@
   <name>G2 Neo4J Connector</name>
   <description>G2 Neo4J connector app</description>
   <properties>
-    <neo4j.version>3.5.14</neo4j.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
+    <neo4j.version>4.0.0</neo4j.version>
   </properties>
 
   <dependencies>
@@ -17,7 +20,7 @@
     <dependency>
       <groupId>org.neo4j.driver</groupId>
       <artifactId>neo4j-java-driver</artifactId>
-      <version>4.0.0</version>
+      <version>${neo4j.version}</version>
     </dependency>
     <!-- end::bolt-dependency[] -->
     <dependency>
@@ -80,8 +83,8 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.1</version>
         <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
+          <!-- source>1.8</source>
+          <target>1.8</target -->
           <encoding>UTF-8</encoding>
         </configuration>
       </plugin>

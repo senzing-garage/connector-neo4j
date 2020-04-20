@@ -40,7 +40,7 @@ RUN export CONNECTOR_NEO4J_JAR_VERSION=$(mvn "help:evaluate" -Dexpression=projec
      SENZING_G2_JAR_PATHNAME=/connector-neo4j/${SENZING_G2_JAR_RELATIVE_PATHNAME} \
      SENZING_G2_JAR_VERSION=${SENZING_G2_JAR_VERSION} \
      package \
- && cp /connector-neo4j/target/connector-neo4j-${CONNECTOR_NEO4J_JAR_VERSION}.jar "/connector-neo4j.jar" \
+ && cp /connector-neo4j/target/neo4j-connector-${CONNECTOR_NEO4J_JAR_VERSION}.jar "/neo4j-connector.jar" \
  && cp -r /connector-neo4j/target/libs "/libs" \
  && cp -r /connector-neo4j/target/conf "/conf"
 
@@ -83,7 +83,9 @@ EXPOSE 8080
 
 # Copy files from builder step.
 
-COPY --from=builder "/connector-neo4j.jar" "/app/connector-neo4j.jar"
+COPY --from=builder "/neo4j-connector.jar" "/app/neo4j-connector.jar"
+COPY --from=builder "/libs" "/app/libs"
+COPY --from=builder "/conf" "/app/conf"
 
 # Make non-root container.
 
@@ -92,4 +94,4 @@ USER 1001
 # Runtime execution.
 
 WORKDIR /app
-ENTRYPOINT ["java", "-jar", "connector-neo4j.jar"]
+ENTRYPOINT ["java", "-jar", "neo4j-connector.jar"]
