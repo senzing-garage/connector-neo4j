@@ -1,6 +1,11 @@
 package com.senzing.neo4j.connector;
 
 import java.io.IOException;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.senzing.neo4j.connector.cmdline.CommandOptions;
 import com.senzing.neo4j.connector.communication.ConsumerType;
 import com.senzing.neo4j.connector.communication.MessageConsumer;
 import com.senzing.neo4j.connector.communication.MessageConsumerFactory;
@@ -26,8 +31,8 @@ public class Neo4jConnector {
    * 
    * @throws ServiceSetupException
    */
-  Neo4jConnector() throws ServiceSetupException {
-    service = new MainService();
+  Neo4jConnector(String config) throws ServiceSetupException {
+    service = new MainService(config);
   }
 
   /**
@@ -37,15 +42,19 @@ public class Neo4jConnector {
    * @throws ServiceSetupException
    * @throws MessageConsumerSetupException
    */
-  public void run() throws ServiceSetupException, MessageConsumerSetupException {
+  public void run(String commandConfig) throws ServiceSetupException, MessageConsumerSetupException {
 
     // Set up a consumer, which receives messages from some source.
 
     String consumerTypeString = null;
     try {
-      AppConfiguration config = new AppConfiguration();
-      consumerTypeString = config.getConfigValue(ConfigKeys.CONSUMER_TYPE);
-    } catch (IOException e) {
+      JSONObject configObject = new JSONObject(commandConfig);
+      consumerTypeString = configObject.optString(CommandOptions.CONSUMER_TYPE);
+      if (consumerTypeString == null || consumerTypeString.isEmpty()) {
+        AppConfiguration config = new AppConfiguration();
+        consumerTypeString = config.getConfigValue(ConfigKeys.CONSUMER_TYPE);
+      }
+    } catch (IOException | JSONException e) {
       throw new ServiceSetupException(e);
     }
     // Verify that required values are set.
@@ -63,7 +72,7 @@ public class Neo4jConnector {
       throw new ServiceSetupException(errorMessage.toString(), e);
     }
 
-    MessageConsumer consumer = MessageConsumerFactory.generateMessageConsumer(consumerType);
+    MessageConsumer consumer = MessageConsumerFactory.generateMessageConsumer(consumerType, commandConfig);
     // Start message processing through consumer.
     try {
       consumer.consume(service);

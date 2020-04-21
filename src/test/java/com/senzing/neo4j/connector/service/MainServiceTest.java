@@ -100,7 +100,7 @@ public class MainServiceTest {
       }
     };
 
-    MainService service = new MainService();
+    MainService service = new MainService("{}");
     service.processEntity(1L);
   }
 
@@ -121,7 +121,7 @@ public class MainServiceTest {
     };
 
     try {
-      new MainService();
+      new MainService("{}");
       fail("Should have thrown an exception");
     } catch (ServiceSetupException e) {
       assertThat(e.getMessage(),
@@ -146,7 +146,7 @@ public class MainServiceTest {
       }
     };
     try {
-      new MainService();
+      new MainService("{}");
       fail("Should have thrown an exception");
     } catch (ServiceSetupException e) {
       assertThat(e.getMessage(),
@@ -170,7 +170,7 @@ public class MainServiceTest {
     };
 
     try {
-      new MainService();
+      new MainService("{}");
       fail("Should have thrown an exception");
     } catch (ServiceSetupException e) {
       assertThat(e.getMessage(),
@@ -196,7 +196,7 @@ public class MainServiceTest {
     };
 
     try {
-      new MainService();
+      new MainService("{}");
       fail("Should have thrown an exception");
     } catch (ServiceSetupException e) {
       assertThat(e.getMessage(), is(equalTo("Invalid graph database type specified: titan")));

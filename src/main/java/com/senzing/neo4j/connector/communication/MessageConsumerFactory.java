@@ -16,9 +16,9 @@ public class MessageConsumerFactory {
    * 
    * @throws MessageConsumerSetupException
    */
-  public static MessageConsumer generateMessageConsumer(ConsumerType consumerType) throws MessageConsumerSetupException {
+  public static MessageConsumer generateMessageConsumer(ConsumerType consumerType, String config) throws MessageConsumerSetupException {
     if (consumerType == ConsumerType.rabbitmq) {
-      return RabbitMQConsumer.generateRabbitMQConsumer();
+      return RabbitMQConsumer.generateRabbitMQConsumer(config);
     }
 
     StringBuilder errorMessage = new StringBuilder("Invalid message consumer specified: ").append(consumerType.toString());

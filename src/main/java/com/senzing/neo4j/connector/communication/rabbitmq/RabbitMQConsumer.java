@@ -13,6 +13,7 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
+import com.senzing.neo4j.connector.cmdline.CommandOptions;
 import com.senzing.neo4j.connector.communication.MessageConsumer;
 import com.senzing.neo4j.connector.communication.exception.MessageConsumerSetupException;
 import com.senzing.neo4j.connector.config.AppConfiguration;
@@ -42,25 +43,26 @@ public class RabbitMQConsumer implements MessageConsumer {
    * 
    * @throws MessageConsumerSetupException
    */
-  public static RabbitMQConsumer generateRabbitMQConsumer() throws MessageConsumerSetupException {
-    return new RabbitMQConsumer();
+  public static RabbitMQConsumer generateRabbitMQConsumer(String config) throws MessageConsumerSetupException {
+    return new RabbitMQConsumer(config);
   }
 
   /**
    * Constructor receives the 2 needed configuration parameters, host name and
    * queue name.
    */
-  private RabbitMQConsumer() throws MessageConsumerSetupException {
+  private RabbitMQConsumer(String config) throws MessageConsumerSetupException {
     String queueName;
     String queueHost;
     String userName;
     String password;
     try {
+      JSONObject configObject = new JSONObject(config);
       AppConfiguration configuration = new AppConfiguration();
-      queueName = configuration.getConfigValue(ConfigKeys.RABBITMQ_NAME);
-      queueHost = configuration.getConfigValue(ConfigKeys.RABBITMQ_HOST);
-      userName = configuration.getConfigValue(ConfigKeys.RABBITMQ_USER_NAME);
-      password = configuration.getConfigValue(ConfigKeys.RABBITMQ_PASSWORD);
+      queueName = getConfigValue(configObject, configuration, CommandOptions.MQ_QUEUE, ConfigKeys.RABBITMQ_NAME);
+      queueHost = getConfigValue(configObject, configuration, CommandOptions.MQ_HOST, ConfigKeys.RABBITMQ_HOST);
+      userName = getConfigValue(configObject, configuration, CommandOptions.MQ_USER, ConfigKeys.RABBITMQ_USER_NAME);
+      password = getConfigValue(configObject, configuration, CommandOptions.MQ_PASSWORD, ConfigKeys.RABBITMQ_PASSWORD);
       if (queueName == null || queueHost == null) {
         List<String> configParams = new ArrayList<>();
         if (queueName == null) {
@@ -73,7 +75,7 @@ public class RabbitMQConsumer implements MessageConsumer {
         errorMessage.append(String.join(", ", configParams));
         throw new MessageConsumerSetupException(errorMessage.toString());
       }
-    } catch (IOException e) {
+    } catch (IOException | JSONException e) {
       throw new MessageConsumerSetupException(e);
     }
     HOST_NAME = queueHost;
@@ -133,7 +135,7 @@ public class RabbitMQConsumer implements MessageConsumer {
   private void processMessage(String message) {
     try {
       // Processes messages of the format:
-      // {"DATA_SOURCE":"TEST","RECORD_ID":"RECORD3","AFFECTED_ENTITIES":[{"ENTITY_ID":1,"LENS_CODE":"DEFAULT"}]} 
+      // {"DATA_SOURCE":"TEST","RECORD_ID":"RECORD3","AFFECTED_ENTITIES":[{"ENTITY_ID":1,"LENS_CODE":"DEFAULT"}]}
       JSONObject json = new JSONObject(message);
       // We are only interested in the entity ids.
       JSONArray entities = json.getJSONArray("AFFECTED_ENTITIES");
@@ -150,4 +152,14 @@ public class RabbitMQConsumer implements MessageConsumer {
       e.printStackTrace();
     }
   }
+
+  private String getConfigValue(JSONObject configObject, AppConfiguration configuration, String cmdOption, String key)
+      throws JSONException {
+    String value = configObject.optString(cmdOption);
+    if (value == null || value.isEmpty()) {
+      value = configuration.getConfigValue(key);
+    }
+    return value;
+  }
+
 }

@@ -14,10 +14,10 @@ public class GraphServiceFactory {
    * 
    * @throws ServiceSetupException
    */
-  static public GraphService generateGraphService(GraphType graphType) throws ServiceSetupException {
+  static public GraphService generateGraphService(GraphType graphType, String config) throws ServiceSetupException {
 
     if (graphType == GraphType.neo4j) {
-      return Neo4jService.generateNeo4jService();
+      return Neo4jService.generateNeo4jService(config);
     }
 
     StringBuilder errorMessage = new StringBuilder("Invalid graph type specified: ").append(graphType.toString());

@@ -41,7 +41,7 @@ public class Neo4jServiceTest {
       public void connect(String uri) throws GraphDatabaseConnectionException {
       }
     };
-    service  = Neo4jService.generateNeo4jService();
+    service  = Neo4jService.generateNeo4jService("{}");
     g2Entity = new G2Entity(entityMessage);
   }
 
@@ -159,7 +159,7 @@ public class Neo4jServiceTest {
         return null;
       }
     };
-    Neo4jService.generateNeo4jService();
+    Neo4jService.generateNeo4jService("{}");
   }
 
   @Test(expected=ServiceSetupException.class)
@@ -176,7 +176,7 @@ public class Neo4jServiceTest {
         throw new GraphDatabaseConnectionException("Failure");
       }
     };
-    Neo4jService.generateNeo4jService();
+    Neo4jService.generateNeo4jService("{}");
   }
 
 }

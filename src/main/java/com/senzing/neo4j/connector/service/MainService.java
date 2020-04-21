@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
+import com.senzing.neo4j.connector.cmdline.CommandOptions;
 import com.senzing.neo4j.connector.config.AppConfiguration;
 import com.senzing.neo4j.connector.config.ConfigKeys;
 import com.senzing.neo4j.connector.data.g2.G2Entity;
@@ -25,31 +27,36 @@ public class MainService {
   private G2Service g2Service;
 
   /**
-   * The constructor sets up the service.  It creates a G2 service and Neo4j service and sets 
-   * configuration parameters.
+   * The constructor sets up the service. It creates a G2 service and Neo4j
+   * service and sets configuration parameters.
    * 
    * @throws IOException
-   * @throws ServiceSetupException 
+   * @throws ServiceSetupException
    */
-  public MainService() throws ServiceSetupException {
+  public MainService(String commandConfig) throws ServiceSetupException {
 
     // Get configuration
     String g2IniFile = null;
     String graphDbType = null;
     try {
+      JSONObject configObject = new JSONObject(commandConfig);
+      g2IniFile = configObject.optString(CommandOptions.INI_FILE);
+      graphDbType = configObject.optString(CommandOptions.GRAPH_TYPE);
       AppConfiguration config = new AppConfiguration();
-      g2IniFile = config.getConfigValue(ConfigKeys.G2_INI_FILE);
       graphDbType = config.getConfigValue(ConfigKeys.GRAPH_DATABASE_TYPE);
-    } catch (IOException e) {
+      if (g2IniFile == null || g2IniFile.isEmpty()) {
+        g2IniFile = config.getConfigValue(ConfigKeys.G2_INI_FILE);
+      }
+    } catch (IOException | JSONException e) {
       throw new ServiceSetupException(e);
     }
 
     // Verify that required values are set.
     List<String> configParams = new ArrayList<>();
-    if (g2IniFile == null || g2IniFile.isEmpty() ) {
+    if (g2IniFile == null || g2IniFile.isEmpty()) {
       configParams.add(ConfigKeys.G2_INI_FILE);
     }
-    if (graphDbType == null || graphDbType.isEmpty() ) {
+    if (graphDbType == null || graphDbType.isEmpty()) {
       configParams.add(ConfigKeys.GRAPH_DATABASE_TYPE);
     }
     if (configParams.size() > 0) {
@@ -68,20 +75,23 @@ public class MainService {
       StringBuilder errorMessage = new StringBuilder("Invalid graph database type specified: ").append(graphDbType);
       throw new ServiceSetupException(errorMessage.toString(), e);
     }
-    graphService = GraphServiceFactory.generateGraphService(graphType);
+    graphService = GraphServiceFactory.generateGraphService(graphType, commandConfig);
   }
 
   /**
-   * Process G2 records.  It retrieves an entity from G2 and loads it into Neo4j database.
+   * Process G2 records. It retrieves an entity from G2 and loads it into Neo4j
+   * database.
    * 
    * @param entityID The id of the entity in the G2 data store.
-   * @throws ServiceExecutionException 
+   * @throws ServiceExecutionException
    */
   public void processEntity(Long entityID) throws ServiceExecutionException {
     String message = g2Service.getEntity(entityID);
 
-    // Start by removing the entity. The "message" contains the current state of the entity so it is 
-    // easier to remove the existing one and then re-add it rather than update. If the message is empty
+    // Start by removing the entity. The "message" contains the current state of the
+    // entity so it is
+    // easier to remove the existing one and then re-add it rather than update. If
+    // the message is empty
     // then it needs to be removed anyway.
     graphService.removeEntity(entityID);
 
@@ -105,6 +115,5 @@ public class MainService {
       }
     }
   }
-
 
 }

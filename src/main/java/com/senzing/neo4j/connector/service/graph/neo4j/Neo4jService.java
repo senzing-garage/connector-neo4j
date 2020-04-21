@@ -6,6 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.senzing.neo4j.connector.cmdline.CommandOptions;
 import com.senzing.neo4j.connector.config.AppConfiguration;
 import com.senzing.neo4j.connector.config.ConfigKeys;
 import com.senzing.neo4j.connector.data.g2.G2Entity;
@@ -31,8 +35,8 @@ public class Neo4jService implements GraphService {
   private static final String DEFAULT_EDGE_G2_TAG = "MATCH_KEY";
   private static final String EMPTY_STRING = "";
 
-  public static Neo4jService generateNeo4jService() throws ServiceSetupException {
-    return new Neo4jService();
+  public static Neo4jService generateNeo4jService(String config) throws ServiceSetupException {
+    return new Neo4jService(config);
   }
 
   /**
@@ -40,17 +44,21 @@ public class Neo4jService implements GraphService {
    * 
    * @throws ServiceSetupException
    */
-  private Neo4jService() throws ServiceSetupException {
+  private Neo4jService(String config) throws ServiceSetupException {
     // Get configuration
     String uri = null;
     try {
-      AppConfiguration config = new AppConfiguration();
-      uri = config.getConfigValue(ConfigKeys.NEO4J_URI);
-      relationshipG2Tag = config.getConfigValue(ConfigKeys.RELATIONSHIP_G2_TAG);
+      JSONObject configObject = new JSONObject(config);
+      uri = configObject.optString(CommandOptions.NEO4J_CONNECTION);
+      AppConfiguration javaConfiguration = new AppConfiguration();
+      if (uri == null || uri.isEmpty()) {
+        uri = javaConfiguration.getConfigValue(ConfigKeys.NEO4J_URI);
+      }
+      relationshipG2Tag = javaConfiguration.getConfigValue(ConfigKeys.RELATIONSHIP_G2_TAG);
       if (relationshipG2Tag == null) {
         relationshipG2Tag = DEFAULT_EDGE_G2_TAG;
       }
-    } catch (IOException e) {
+    } catch (IOException | JSONException e) {
       throw new ServiceSetupException(e);
     }
 
@@ -211,7 +219,8 @@ public class Neo4jService implements GraphService {
     return wrapForSpecialCharacters(removeLeadingSymbols(tagValue.toString()));
   }
 
-  // Adds back ticks around a string. They are needed for special characters like '+', '-'. Neo4j rejects
+  // Adds back ticks around a string. They are needed for special characters like
+  // '+', '-'. Neo4j rejects
   // the string otherwise.
   String wrapForSpecialCharacters(String value) {
     return "`" + value + "`";
