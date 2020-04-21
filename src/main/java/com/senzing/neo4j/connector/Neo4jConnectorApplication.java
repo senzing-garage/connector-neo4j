@@ -32,12 +32,12 @@ public class Neo4jConnectorApplication {
     Options options = new Options();
 
     // add a option
-    options.addOption(CommandOptions.INI_FILE, false, "Path to the G2 ini file");
-    options.addOption(CommandOptions.NEO4J_CONNECTION, false, "Connection string for Neo4j");
-    options.addOption(CommandOptions.MQ_HOST, false, "Host for RabbitMQ");
-    options.addOption(CommandOptions.MQ_USER, false, "User name for RabbitMQ");
-    options.addOption(CommandOptions.MQ_PASSWORD, false, "Password for RabbitMQ");
-    options.addOption(CommandOptions.MQ_QUEUE, false, "Queue name for the receiving queue");
+    options.addOption(CommandOptions.INI_FILE, true, "Path to the G2 ini file");
+    options.addOption(CommandOptions.NEO4J_CONNECTION, true, "Connection string for Neo4j");
+    options.addOption(CommandOptions.MQ_HOST, true, "Host for RabbitMQ");
+    options.addOption(CommandOptions.MQ_USER, true, "User name for RabbitMQ");
+    options.addOption(CommandOptions.MQ_PASSWORD, true, "Password for RabbitMQ");
+    options.addOption(CommandOptions.MQ_QUEUE, true, "Queue name for the receiving queue");
 
     CommandLineParser parser = new DefaultParser();
     CommandLine commandLine = parser.parse(options, args);
