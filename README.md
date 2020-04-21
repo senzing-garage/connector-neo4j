@@ -133,6 +133,13 @@ it will require modifications to match the installation of g2 and other applicat
 
 The Connector requires installations of G2, RabbitMQ and Neo4j for its operation.
 
+Note: if docker containers are used it is best to use a docker network to facilitate communication between the containers.
+An example for setting up a network:
+```console
+sudo docker network create -d bridge ncn
+```
+This network "ncn" will be used when dealing with containers in this writeup.
+
 1. Installing G2
 
     If you haven't already, please refer to
@@ -175,6 +182,7 @@ The Connector requires installations of G2, RabbitMQ and Neo4j for its operation
             --publish=7687:7687 \
             --volume=$HOME/neo4j/data:/data \
             --volume=$HOME/neo4j/logs:/logs \
+            --network ncn \
             neo4j:latest
         ```
 
@@ -193,7 +201,11 @@ The Connector requires installations of G2, RabbitMQ and Neo4j for its operation
     1. Run as a docker container
 
         ```console
-       sudo docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
+       sudo docker run -it --rm --name rabbitmq \
+           --publish 5672:5672 \
+           --publish 15672:15672 \
+            --network ncn \
+           rabbitmq:3-management
         ```
 
 1. Create a queue in RabbitMQ
@@ -212,7 +224,9 @@ The Connector requires installations of G2, RabbitMQ and Neo4j for its operation
 
 1. :pencil2: Edit configuration
 
-    Before running the application the configuration must be changed. The configuration file is found at `target/conf/neo4jconnector.properties`.
+    There are two ways to pass configuration to the connector.  Through a configuration file and with command line parameters.
+    
+    Lets first look at the configuration file.  The configuration file is found at `target/conf/neo4jconnector.properties`.  The steps to set it up follow.
     
     1. Locate the G2 ini file.  It can generally be found in the project path as `/home/<user>/senzing/etc/G2Module.ini` where `user` is the user account. See the [Quick Start Guide](https://senzing.zendesk.com/hc/en-us/articles/115002408867-Quickstart-Guide) for further information.
     1. Open `target/conf/neo4jconnector.properties` in an editor.
@@ -220,6 +234,22 @@ The Connector requires installations of G2, RabbitMQ and Neo4j for its operation
     1. Change the `neo4jPassword` for `neo4jconnector.neo4j.uri` to the password you created in `Install Neo4j` section above.
     1. Make any other changes needed. For example if RabbitMQ was set up with user security then user name and password need to be set in the file.
     
+    The command line takes following options:
+    -iniFile 
+        path to the G2 ini file
+    -neo4jConnection
+        connection string for neo4j, the format is bolt://<user>:<password>@<hostname>:<port>
+    -mqHost
+        host name or ip address for RabbitMQ server
+    -mqUser
+        RabbitMQ user name
+    -mqPassword
+        Password for RabbitMQ
+    -mqQueue
+        The name of the RabbitMQ queue used for receiving messages
+
+    If both configuration file and command line options are used the command line options take precedence.
+
 ### Running
 
 To execute the server you will use `java -jar`.  It is assumed that your environment
@@ -231,6 +261,15 @@ java -jar neo4j-connector-[version].jar
 ```
 
 Where `[version]` is the version number from the `pom.xml` file.
+
+If command line options are used it could look like this:
+```console
+java -jar neo4j-connector-[version].jar \
+    -iniFile /home/user/senzing/etc/G2Module.ini \
+    -neo4jConnection bolt://neo4j:neo4jPassword@localhost:7687 \
+    -mqHost localhost \
+    -mqQueue senzing
+```
 
 
 ## Demonstrate using Docker
@@ -343,6 +382,8 @@ see [Environment Variables](https://github.com/Senzing/knowledge-base/blob/maste
        **Windows** - [File sharing](https://github.com/Senzing/knowledge-base/blob/master/HOWTO/share-directories-with-docker.md#windows)
        must be enabled for the volumes.
 
+   When running the docker container the command line options need to be used.
+
    Example:
 
     ```console
@@ -352,6 +393,11 @@ see [Environment Variables](https://github.com/Senzing/knowledge-base/blob/maste
       --volume ${SENZING_G2_DIR}:/opt/senzing/g2 \
       --volume ${SENZING_VAR_DIR}:/var/opt/senzing \
       --volume ${PROJECT_DIR}:${PROJECT_DIR} \
-      senzing/connector-neo4j
+      --network ncn \
+      senzing/connector-neo4j \
+          -iniFile /home/user/senzing/etc/G2Module.ini \
+          -neo4jConnection bolt://neo4j:neo4jPassword@localhost:7687 \
+          -mqHost localhost \
+          -mqQueue senzing
     ```
 
