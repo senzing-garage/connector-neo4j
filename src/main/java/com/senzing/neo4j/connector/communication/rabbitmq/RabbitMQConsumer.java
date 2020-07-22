@@ -3,6 +3,7 @@ package com.senzing.neo4j.connector.communication.rabbitmq;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
 import org.json.JSONArray;
@@ -105,12 +106,7 @@ public class RabbitMQConsumer implements MessageConsumer {
         factory.setPassword(PASSWORD);
       }
       Connection connection = factory.newConnection();
-      Channel channel = connection.createChannel();
-
-      boolean durable = false;
-      boolean exclusive = false;
-      boolean autoDelete = false;
-      channel.queueDeclare(QUEUE_NAME, durable, exclusive, autoDelete, null);
+      Channel channel = getChannel(connection, QUEUE_NAME);
 
       DeliverCallback deliverCallback = (consumerTag, delivery) -> {
         String message = new String(delivery.getBody(), UTF8_ENCODING);
@@ -130,6 +126,22 @@ public class RabbitMQConsumer implements MessageConsumer {
       throw new MessageConsumerSetupException(e);
     }
 
+  }
+
+  private Channel getChannel(Connection connection, String queueName) throws IOException {
+    try {
+      return declareQueue(connection, queueName, true, false, false, null);
+    } catch (IOException e) {
+      // Possibly the queue is already declared and as non-durable. Retry with durable = false.
+      return declareQueue(connection, queueName, false, false, false, null);
+    }
+  }
+
+  private Channel declareQueue(Connection connection, String queueName, boolean durable, boolean exclusive,
+      boolean autoDelete, Map<String, Object> arguments) throws IOException {
+    Channel channel = connection.createChannel();
+    channel.queueDeclare(queueName, durable, exclusive, autoDelete, arguments);
+    return channel;
   }
 
   private void processMessage(String message) {

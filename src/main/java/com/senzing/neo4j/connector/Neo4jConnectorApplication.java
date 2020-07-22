@@ -62,9 +62,9 @@ public class Neo4jConnectorApplication {
       jsonRoot.put(CommandOptions.MQ_QUEUE, commandLine.getOptionValue(CommandOptions.MQ_QUEUE));
     }
 
-    String consumer_type = commandLine.getOptionValue(CommandOptions.MQ_QUEUE, ConsumerType.rabbitmq.toString());
+    String consumer_type = commandLine.getOptionValue(CommandOptions.CONSUMER_TYPE, ConsumerType.rabbitmq.toString());
     String graph_type = commandLine.getOptionValue(CommandOptions.GRAPH_TYPE, GraphType.neo4j.toString());
-    jsonRoot.put(CommandOptions.MQ_QUEUE, consumer_type);
+    jsonRoot.put(CommandOptions.CONSUMER_TYPE, consumer_type);
     jsonRoot.put(CommandOptions.GRAPH_TYPE, graph_type);
 
     return jsonRoot.toString();
