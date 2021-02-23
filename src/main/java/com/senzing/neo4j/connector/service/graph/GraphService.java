@@ -1,7 +1,7 @@
 package com.senzing.neo4j.connector.service.graph;
 
+import com.senzing.listener.senzing.service.exception.ServiceExecutionException;
 import com.senzing.neo4j.connector.data.g2.G2Entity;
-import com.senzing.neo4j.connector.service.exception.ServiceExecutionException;
 
 /**
  * Interface for graph services for G2 applications.
@@ -40,4 +40,8 @@ public interface GraphService {
    */
   public void addRecordRelationsips(G2Entity entity) throws ServiceExecutionException;
 
+  /**
+   * Cleans up the service after usage.
+   */
+  public void cleanUp();
 }

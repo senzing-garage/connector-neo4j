@@ -56,6 +56,11 @@ public class Neo4jConnection implements GraphDatabaseConnection {
     }
   }
 
+  @Override
+  public void close() {
+    driver.close();
+  }
+
   static Object convert(Value value) {
     switch (value.type().name()) {
     case "PATH":

@@ -16,6 +16,11 @@
   </properties>
 
   <dependencies>
+    <dependency>
+      <groupId>com.senzing</groupId>
+      <artifactId>senzing-listener</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
     <!-- tag::bolt-dependency[] -->
     <dependency>
       <groupId>org.neo4j.driver</groupId>

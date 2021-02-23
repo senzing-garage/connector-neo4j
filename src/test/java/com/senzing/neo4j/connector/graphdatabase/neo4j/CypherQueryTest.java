@@ -7,8 +7,6 @@ import java.util.HashMap;
 
 import org.junit.Test;
 
-import com.senzing.neo4j.connector.graphdatabase.neo4j.CypherQuery;
-
 public class CypherQueryTest {
 
   private static String queryString = "CREATE (:PEOPLE $params)";

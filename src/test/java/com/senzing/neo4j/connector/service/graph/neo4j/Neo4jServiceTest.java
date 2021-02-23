@@ -12,14 +12,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.senzing.listener.senzing.service.exception.ServiceExecutionException;
+import com.senzing.listener.senzing.service.exception.ServiceSetupException;
 import com.senzing.neo4j.connector.config.AppConfiguration;
 import com.senzing.neo4j.connector.data.g2.G2Entity;
 import com.senzing.neo4j.connector.graphdatabase.exception.GraphDatabaseConnectionException;
 import com.senzing.neo4j.connector.graphdatabase.neo4j.Neo4jConnection;
-import com.senzing.neo4j.connector.service.exception.ServiceExecutionException;
-import com.senzing.neo4j.connector.service.exception.ServiceSetupException;
-import com.senzing.neo4j.connector.service.graph.neo4j.Neo4jService;
-
 import mockit.Mock;
 import mockit.MockUp;
 import mockit.integration.junit4.JMockit;

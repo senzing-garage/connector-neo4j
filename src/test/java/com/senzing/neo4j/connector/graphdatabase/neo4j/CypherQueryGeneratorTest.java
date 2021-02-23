@@ -10,9 +10,6 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.senzing.neo4j.connector.graphdatabase.neo4j.CypherQuery;
-import com.senzing.neo4j.connector.graphdatabase.neo4j.CypherQueryGenerator;
-
 public class CypherQueryGeneratorTest {
   @Test
   public void createNodeQueryWorkOK() {
