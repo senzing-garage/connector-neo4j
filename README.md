@@ -37,8 +37,8 @@ This project gives the framework for mapping Senzing data to Neo4j database but 
 
 ### Dependencies
 
-To build the Neo4j Connector you will need Apache Maven (recommend version 3.6.1 or later)
-as well as OpenJDK version 11.0.x (recommend version 11.0.6+10 or later).
+To build the Neo4j Connector you will need [Apache Maven](https://maven.apache.org/install.html) (recommend version 3.6.1 or later)
+as well as [OpenJDK](http://openjdk.java.net/) version 11.0.x (recommend version 11.0.6+10 or later).
 
 This application interacts with Senzing API so it needs to be installed beforehand.  Information on how to install it can be found here: [Senzing API quick start](https://docs.senzing.com/quickstart/)
 
@@ -130,7 +130,7 @@ mvn clean install
 To build connector-neo4j simply execute:
 
 ```console
-git@github.com:Senzing/connector-neo4j.git
+git clone git@github.com:Senzing/connector-neo4j.git
 cd connector-neo4j
 mvn install
 ```
@@ -162,7 +162,7 @@ This network "ncn" will be used when dealing with containers in this write-up.
 
      An easy way to install and run Neo4j is to run it as a docker container
         
-```console
+    ```console
         sudo sudo docker run --detach \
             --publish=7474:7474 \
             --publish=7687:7687 \
@@ -170,27 +170,25 @@ This network "ncn" will be used when dealing with containers in this write-up.
             --volume=$HOME/neo4j/logs:/logs \
             --network ncn \
             neo4j:latest
-```
+    ```
 
-    Other ways to install and run can be found here:
+    Other ways to install and run Neo4j can be found here:
     https://neo4j.com/docs/operations-manual/current/installation/
 
-    Once the installation is done go to `http://<server name>:7474`.
+    Once the installation is done go to `http://<server name>:7474`, using a browser.
     If the installation is local that would be `http://locahlost:7474`.
     Log in using default user name and password, which are neo4j/neo4j.  You will be asked to change your password. Do so and remember the password since you will need it for the `Edit configuration` section below.
 
 1. Install RabbitMQ
 
     Again, run it as a docker container is a simple option
-
-```console
+    ```console
        sudo docker run -it --rm --name rabbitmq \
            --publish 5672:5672 \
            --publish 15672:15672 \
             --network ncn \
            rabbitmq:3-management
-```
-
+    ```
     If using an installer is preferred please see
         https://www.rabbitmq.com/download.html
             
