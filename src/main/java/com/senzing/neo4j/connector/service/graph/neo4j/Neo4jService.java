@@ -9,6 +9,8 @@ import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.senzing.listener.senzing.service.exception.ServiceExecutionException;
+import com.senzing.listener.senzing.service.exception.ServiceSetupException;
 import com.senzing.neo4j.connector.cmdline.CommandOptions;
 import com.senzing.neo4j.connector.config.AppConfiguration;
 import com.senzing.neo4j.connector.config.ConfigKeys;
@@ -17,8 +19,6 @@ import com.senzing.neo4j.connector.graphdatabase.exception.GraphDatabaseConnecti
 import com.senzing.neo4j.connector.graphdatabase.neo4j.CypherQuery;
 import com.senzing.neo4j.connector.graphdatabase.neo4j.CypherQueryGenerator;
 import com.senzing.neo4j.connector.graphdatabase.neo4j.Neo4jConnection;
-import com.senzing.neo4j.connector.service.exception.ServiceExecutionException;
-import com.senzing.neo4j.connector.service.exception.ServiceSetupException;
 import com.senzing.neo4j.connector.service.graph.GraphService;
 
 /**
@@ -209,6 +209,11 @@ public class Neo4jService implements GraphService {
     for (CypherQuery relQuery : relationshipQueries) {
       runQuery(relQuery);
     }
+  }
+
+  @Override
+  public void cleanUp() {
+    connection.close();
   }
 
   private String createRelationshipType(Map<String, Object> relationship, String tag) {

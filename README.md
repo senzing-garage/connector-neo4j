@@ -2,14 +2,14 @@
 
 ## Overview
 
-The Neo4j connector implemented in Java.  The connector reads messages containing G2 records and entity data from a queue (RabbitMQ), derives from that data what entities are affected, gets the entity data from G2, through its API, finds how the entities relate to other entities and records and inserts that data into a Neo4j database.  Note that this connector does not load records into the Neo4j database.  If the record data is desired it will need to be loaded into the database prior to loading the entities.  It is required the records contain DATA_SOURCE and RECORD_ID fields, matching those used in G2 for linking records back to source systems.
+The Neo4j connector is an application, written in Java, which gathers information from Senzing and maps it into Neo4j graph database.  The connector reads messages containing Senzing information from a message queue (RabbitMQ or AWS SQS), derives from that data what entities in the Senzing repository are affected, gets the entity data, using the Senzing API, finds how the entities relate to other entities and inserts that data into a Neo4j database.  Note that this connector does not load source records into the Neo4j database.  It loads the Senzing entity information and each entity can be constructed from multiple source records.  If the source record data is desired, and how it relates to the Senzing entities, it will need to be loaded into the database prior to loading the Senzing entities.  In that case the records need to contain DATA_SOURCE and RECORD_ID fields, matching those used in Senzing repository for linking the Senzing entities back to source system records.
 
-The format of the message is
+The messages read from the message queue are in json format and an example looks like this:
 ```console
 {"DATA_SOURCE":"TEST","RECORD_ID":"RECORD3","AFFECTED_ENTITIES":[{"ENTITY_ID":1,"LENS_CODE":"DEFAULT"}]}
 ```
 
-This project gives the framework for mapping G2 data to Neo4j database but can be modified to fit the user's specific solutions.
+This project gives the framework for mapping Senzing data to Neo4j database but can be modified to fit the user's specific solutions.
 
 ### Contents
 
@@ -27,6 +27,9 @@ This project gives the framework for mapping G2 data to Neo4j database but can b
 	
 ### Legend
 
+1. :thinking: - A "thinker" icon means that a little extra thinking may be required.
+   Perhaps you'll need to make some choices.
+   Perhaps it's an optional step.
 1. :pencil2: - A "pencil" icon means that the instructions may need modification before performing.
 1. :warning: - A "warning" icon means that something tricky is happening, so pay attention.
 
@@ -34,11 +37,12 @@ This project gives the framework for mapping G2 data to Neo4j database but can b
 
 ### Dependencies
 
-To build the Neo4j Connector you will need Apache Maven (recommend version 3.6.1 or later)
-as well as OpenJDK version 11.0.x (recommend version 11.0.6+10 or later).
+To build the Neo4j Connector you will need [Apache Maven](https://maven.apache.org/install.html) (recommend version 3.6.1 or later)
+as well as [OpenJDK](http://openjdk.java.net/) version 11.0.x (recommend version 11.0.6+10 or later).
 
-You will also need the Senzing `g2.jar` file installed in your Maven repository.
-In order to install `g2.jar` you must:
+This application interacts with Senzing API so it needs to be installed beforehand.  Information on how to install it can be found here: [Senzing API quick start](https://docs.senzing.com/quickstart/)
+
+You will also need the Senzing `g2.jar` file installed in your Maven repository.  This file is included in the Senzing API installation above.  In order to install `g2.jar` you must:
 
 1. Locate your
    [SENZING_G2_DIR](https://github.com/Senzing/knowledge-base/blob/master/lists/environment-variables.md#senzing_g2_dir)
@@ -115,9 +119,19 @@ In order to install `g2.jar` you must:
 
 ### Building
 
-To build simply execute:
+The Neo4j connector is built on [Senzing listener](https://github.com/Senzing/senzing-listener) framework.  This framework needs to be downloaded and built before the Neo4j connector is built.  The steps for building the listener are:
 
 ```console
+git clone git@github.com:Senzing/senzing-listener.git
+cd senzing-listener
+mvn clean install
+```
+
+To build connector-neo4j simply execute:
+
+```console
+git clone git@github.com:Senzing/connector-neo4j.git
+cd connector-neo4j
 mvn install
 ```
 
@@ -131,52 +145,24 @@ it will require modifications to match the installation of g2 and other applicat
 
 ### Preparation for running
 
-The Connector requires installations of G2, RabbitMQ and Neo4j for its operation.
+The Connector requires installations of Senzing API (see above), RabbitMQ and Neo4j for its operation.
 
 Note: if docker containers are used it is best to use a docker network to facilitate communication between the containers.
 An example for setting up a network:
 ```console
 sudo docker network create -d bridge ncn
 ```
-This network "ncn" will be used when dealing with containers in this writeup.
+This network "ncn" will be used when dealing with containers in this write-up.
 
 1. Installing G2
 
-    If you haven't already, please refer to
-    ```console
-    https://senzing.zendesk.com/hc/en-us/articles/115002408867-Quickstart-Guide
-    ```
-    for installation instructions.
+    If not done already.  See [Dependencies](#dependencies) above.
 
 1. Install Neo4j
 
-    1. Linux:
-
-        There are several ways to install on Linux.
+     An easy way to install and run Neo4j is to run it as a docker container
         
-        1. Using an installer
-        ```console
-            See https://neo4j.com/download/
-        ```
- 
-        1. Download a tar file
- 
-            ```console
-            wget https://neo4j.com/artifact.php?name=neo4j-community-4.0.3-unix.tar.gz
-            tar -xf neo4j-community-4.0.3-unix.tar.gz
-            cd  cd neo4j-community-4.0.3/
-            bin/neo4j console
-            ```
-            
-    1. Windows:
-
-        ```console
-            See https://neo4j.com/download/
-        ```
-
-    1. Run as a docker container
-        
-        ```console
+    ```console
         sudo sudo docker run --detach \
             --publish=7474:7474 \
             --publish=7687:7687 \
@@ -184,36 +170,32 @@ This network "ncn" will be used when dealing with containers in this writeup.
             --volume=$HOME/neo4j/logs:/logs \
             --network ncn \
             neo4j:latest
-        ```
+    ```
 
-    Further information about the installations can be found here:
+    Other ways to install and run Neo4j can be found here:
     https://neo4j.com/docs/operations-manual/current/installation/
 
-    Once the installation is done go to `http://<server name>:7474`.
+    Once the installation is done go to `http://<server name>:7474`, using a browser.
     If the installation is local that would be `http://locahlost:7474`.
     Log in using default user name and password, which are neo4j/neo4j.  You will be asked to change your password. Do so and remember the password since you will need it for the `Edit configuration` section below.
 
-1. Installing RabbitMQ
+1. Install RabbitMQ
 
-    1. Using an installer
-        See https://www.rabbitmq.com/download.html
-            
-    1. Run as a docker container
-
-        ```console
+    Again, run it as a docker container is a simple option
+    ```console
        sudo docker run -it --rm --name rabbitmq \
            --publish 5672:5672 \
            --publish 15672:15672 \
             --network ncn \
            rabbitmq:3-management
-        ```
+    ```
+    If using an installer is preferred please see
+        https://www.rabbitmq.com/download.html
+            
+1. :thinking: **Optional:**  Create a queue in RabbitMQ
 
-1. Create a queue in RabbitMQ
+    The Connector will create the queue specified in configuration if it doesn't exist already.  If having a queue created beforehand is desired, here are the steps:
 
-    The Connector reads from a queue and it needs to be created before running the container.
-
-    The steps for creating the queue:
-    
     1. Open up a browser and enter `http://<host name>:15672` into the address bar.  If you install locally this will be `http://localhost:14562`
     1. Log in. Default is guest/guest on a fresh install.
     1. Select `Queues` tab at the top.
@@ -235,10 +217,11 @@ This network "ncn" will be used when dealing with containers in this writeup.
     1. Make any other changes needed. For example if RabbitMQ was set up with user security then user name and password need to be set in the file.
     
     The command line takes following options:
+```console
     -iniFile 
         path to the G2 ini file
     -neo4jConnection
-        connection string for neo4j, the format is bolt://<user>:<password>@<hostname>:<port>
+        connection string for neo4j, the format is `bolt://<user>:<password>@<hostname>:<port>`
     -mqHost
         host name or ip address for RabbitMQ server
     -mqUser
@@ -247,6 +230,7 @@ This network "ncn" will be used when dealing with containers in this writeup.
         Password for RabbitMQ
     -mqQueue
         The name of the RabbitMQ queue used for receiving messages
+```
 
     If both configuration file and command line options are used the command line options take precedence.
 
@@ -289,6 +273,7 @@ Budget 40 minutes to get the demonstration up-and-running, depending on CPU and 
 This repository assumes a working knowledge of:
 
 1. [Docker](https://github.com/Senzing/knowledge-base/blob/master/WHATIS/docker.md)
+
 
 ### Initialize Senzing
 
