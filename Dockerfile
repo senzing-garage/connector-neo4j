@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=senzing/senzing-base:1.6.1
+ARG BASE_IMAGE=senzing/senzing-base:1.6.2
 ARG BASE_BUILDER_IMAGE=senzing/base-image-debian:1.0.3
 
 # -----------------------------------------------------------------------------
@@ -9,7 +9,7 @@ FROM ${BASE_BUILDER_IMAGE} as builder
 
 # Set Shell to use for RUN commands in builder step.
 
-ENV REFRESHED_AT=2019-11-13
+ENV REFRESHED_AT=2021-10-11
 
 LABEL Name="senzing/connector-neo4j-builder" \
       Maintainer="support@senzing.com" \
