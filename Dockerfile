@@ -9,7 +9,7 @@ FROM ${BASE_BUILDER_IMAGE} as builder
 
 # Set Shell to use for RUN commands in builder step.
 
-ENV REFRESHED_AT=2021-10-11
+ENV REFRESHED_AT=2021-12-07
 
 LABEL Name="senzing/connector-neo4j-builder" \
       Maintainer="support@senzing.com" \
@@ -50,7 +50,7 @@ RUN export CONNECTOR_NEO4J_JAR_VERSION=$(mvn "help:evaluate" -Dexpression=projec
 
 FROM ${BASE_IMAGE}
 
-ENV REFRESHED_AT=2020-01-29
+ENV REFRESHED_AT=2021-12-07
 
 LABEL Name="senzing/connector-neo4j" \
       Maintainer="support@senzing.com" \
