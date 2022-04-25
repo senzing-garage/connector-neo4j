@@ -119,10 +119,29 @@ You will also need the Senzing `g2.jar` file installed in your Maven repository.
 
 ### Building
 
-The Neo4j connector is built on [Senzing listener](https://github.com/Senzing/senzing-listener) framework.  This framework needs to be downloaded and built before the Neo4j connector is built.  The steps for building the listener are:
+The Neo4j connector is built on [Senzing listener](https://github.com/Senzing/senzing-listener) framework pre-release version 0.0.1.
+Download the [version 0.0.1 pre-release Senzing Listener](https://github.com/Senzing/senzing-listener/releases/tag/0.0.1) or clone
+the [Senzing Listener](https://github.com/Senzing/senzing-listener) repository using the `--branch` to grab the `0.0.1` tag specifically.
+The steps for building the listener are:
 
+
+#### Option 1: Download the [ZIP file](https://github.com/Senzing/senzing-listener/archive/refs/tags/0.0.1.zip), extract and then build specific release.
 ```console
-git clone git@github.com:Senzing/senzing-listener.git
+unzip [path-to-download]/senzing-listener-0.0.1.zip
+cd senzing-listener-0.0.1
+mvn clean install
+```
+
+#### Option 2: Download the [Gzip Tar file](https://github.com/Senzing/senzing-listener/archive/refs/tags/0.0.1.tar.gz), extract and then build specific release.
+```console
+tar -xf [path-to-download]/senzing-listener-0.0.1.tar.gz
+cd senzing-listener-0.0.1
+mvn clean install
+```
+
+#### Option 3: Clone repository to the specific `0.0.1` tag.
+```console
+git clone --branch 0.0.1 git@github.com:Senzing/senzing-listener.git
 cd senzing-listener
 mvn clean install
 ```
