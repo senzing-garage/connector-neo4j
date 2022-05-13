@@ -1,6 +1,6 @@
 package com.senzing.neo4j.connector.service.graph;
 
-import com.senzing.listener.senzing.service.exception.ServiceExecutionException;
+import com.senzing.listener.service.exception.ServiceExecutionException;
 import com.senzing.neo4j.connector.data.g2.G2Entity;
 
 /**

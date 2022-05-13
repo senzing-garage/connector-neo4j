@@ -9,8 +9,8 @@ import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.senzing.listener.senzing.service.exception.ServiceExecutionException;
-import com.senzing.listener.senzing.service.exception.ServiceSetupException;
+import com.senzing.listener.service.exception.ServiceExecutionException;
+import com.senzing.listener.service.exception.ServiceSetupException;
 import com.senzing.neo4j.connector.cmdline.CommandOptions;
 import com.senzing.neo4j.connector.config.AppConfiguration;
 import com.senzing.neo4j.connector.config.ConfigKeys;

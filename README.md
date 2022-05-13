@@ -42,62 +42,6 @@ as well as [OpenJDK](http://openjdk.java.net/) version 11.0.x (recommend version
 
 This application interacts with Senzing API so it needs to be installed beforehand.  Information on how to install it can be found here: [Senzing API quick start](https://docs.senzing.com/quickstart/)
 
-You will also need the Senzing `g2.jar` file installed in your Maven repository.  This file is included in the Senzing API installation above.  In order to install `g2.jar` you must:
-
-1. Locate your
-   [SENZING_G2_DIR](https://github.com/Senzing/knowledge-base/blob/main/lists/environment-variables.md#senzing_g2_dir)
-   directory.
-   The default locations are:
-    1. [Linux](https://github.com/Senzing/knowledge-base/blob/main/HOWTO/install-senzing-api.md#centos): `/opt/senzing/g2`
-    1. Windows MSI Installer: `C:\Program Files\Senzing\`
-
-1. Determine your `SENZING_G2_JAR_VERSION` version number:
-    1. Locate your `g2BuildVersion.json` file:
-        1. Linux: `${SENZING_G2_DIR}/g2BuildVersion.json`
-        1. Windows: `${SENZING_G2_DIR}\data\g2BuildVersion.json`
-    1. Find the value for the `"VERSION"` property in the JSON contents.
-       Example:
-
-        ```console
-        {
-            "PLATFORM": "Linux",
-            "VERSION": "1.14.20060",
-            "API_VERSION": "1.14.3",
-            "BUILD_NUMBER": "2020_02_29__02_00"
-        }
-        ```
-
-1. Install the `g2.jar` file in your local Maven repository, replacing the
-   `${SENZING_G2_DIR}` and `${SENZING_G2_JAR_VERSION}` variables as determined above:
-
-    1. Linux:
-
-        ```console
-        export SENZING_G2_DIR=/opt/senzing/g2
-        export SENZING_G2_JAR_VERSION=1.14.3
-
-        mvn install:install-file \
-            -Dfile=${SENZING_G2_DIR}/lib/g2.jar \
-            -DgroupId=com.senzing \
-            -DartifactId=g2 \
-            -Dversion=${SENZING_G2_JAR_VERSION} \
-            -Dpackaging=jar
-        ```
-
-    1. Windows:
-
-        ```console
-        set SENZING_G2_DIR="C:\Program Files\Senzing\g2"
-        set SENZING_G2_JAR_VERSION=1.14.3
-
-        mvn install:install-file \
-            -Dfile="%SENZING_G2_DIR%\lib\g2.jar" \
-            -DgroupId=com.senzing \
-            -DartifactId=g2 \
-            -Dversion="%SENZING_G2_JAR_VERSION%" \
-            -Dpackaging=jar
-        ```
-
 1. Setup your environment.  The Connector relies on native libraries and the
    environment must be properly setup to find those libraries:
 
@@ -119,34 +63,7 @@ You will also need the Senzing `g2.jar` file installed in your Maven repository.
 
 ### Building
 
-The Neo4j connector is built on [Senzing listener](https://github.com/Senzing/senzing-listener) framework pre-release version 0.0.1.
-Download the [version 0.0.1 pre-release Senzing Listener](https://github.com/Senzing/senzing-listener/releases/tag/0.0.1) or clone
-the [Senzing Listener](https://github.com/Senzing/senzing-listener) repository using the `--branch` to grab the `0.0.1` tag specifically.
-The steps for building the listener are:
-
-
-#### Option 1: Download the [ZIP file](https://github.com/Senzing/senzing-listener/archive/refs/tags/0.0.1.zip), extract and then build specific release.
-```console
-unzip [path-to-download]/senzing-listener-0.0.1.zip
-cd senzing-listener-0.0.1
-mvn clean install
-```
-
-#### Option 2: Download the [Gzip Tar file](https://github.com/Senzing/senzing-listener/archive/refs/tags/0.0.1.tar.gz), extract and then build specific release.
-```console
-tar -xf [path-to-download]/senzing-listener-0.0.1.tar.gz
-cd senzing-listener-0.0.1
-mvn clean install
-```
-
-#### Option 3: Clone repository to the specific `0.0.1` tag.
-```console
-git clone --branch 0.0.1 git@github.com:Senzing/senzing-listener.git
-cd senzing-listener
-mvn clean install
-```
-
-To build connector-neo4j simply execute:
+To build connector-neo4j:
 
 ```console
 git clone git@github.com:Senzing/connector-neo4j.git

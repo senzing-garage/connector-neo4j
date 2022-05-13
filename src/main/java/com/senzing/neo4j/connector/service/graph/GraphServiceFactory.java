@@ -1,6 +1,6 @@
 package com.senzing.neo4j.connector.service.graph;
 
-import com.senzing.listener.senzing.service.exception.ServiceSetupException;
+import com.senzing.listener.service.exception.ServiceSetupException;
 import com.senzing.neo4j.connector.service.graph.neo4j.Neo4jService;
 
 public class GraphServiceFactory {

@@ -13,11 +13,10 @@ import javax.json.JsonReader;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.senzing.listener.senzing.data.Definitions;
-import com.senzing.listener.senzing.service.ListenerService;
-import com.senzing.listener.senzing.service.exception.ServiceExecutionException;
-import com.senzing.listener.senzing.service.exception.ServiceSetupException;
-import com.senzing.listener.senzing.service.g2.G2Service;
+import com.senzing.listener.service.ListenerService;
+import com.senzing.listener.service.exception.ServiceExecutionException;
+import com.senzing.listener.service.exception.ServiceSetupException;
+import com.senzing.listener.service.g2.G2Service;
 import com.senzing.neo4j.connector.cmdline.CommandOptions;
 import com.senzing.neo4j.connector.config.AppConfiguration;
 import com.senzing.neo4j.connector.config.ConfigKeys;
@@ -166,7 +165,8 @@ public class Neo4jConnectorService implements ListenerService {
         for (int i = 0; i < entities.size(); i++) {
           JsonObject entity = entities.getJsonObject(i);
           if (entity != null) {
-            Long entityID = entity.getJsonNumber(Definitions.ENTITY_ID_FIELD).longValue();
+            //Long entityID = entity.getJsonNumber(Definitions.ENTITY_ID_FIELD).longValue();
+            Long entityID = entity.getJsonNumber(G2Entity.ENTITY_ID_FIELD).longValue();
             processEntity(entityID);
           }
         }
@@ -195,8 +195,8 @@ public class Neo4jConnectorService implements ListenerService {
    * Cleans up the service.  Closes G2 and graph database connections and frees up resources.
    */
   @Override
-  public void cleanUp() {
-    g2Service.cleanUp();
+  public void destroy() {
+    g2Service.destroy();
     graphService.cleanUp();
   }
 

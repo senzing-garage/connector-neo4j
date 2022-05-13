@@ -12,8 +12,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.senzing.listener.senzing.service.exception.ServiceExecutionException;
-import com.senzing.listener.senzing.service.exception.ServiceSetupException;
+import com.senzing.listener.service.exception.ServiceExecutionException;
+import com.senzing.listener.service.exception.ServiceSetupException;
 import com.senzing.neo4j.connector.config.AppConfiguration;
 import com.senzing.neo4j.connector.data.g2.G2Entity;
 import com.senzing.neo4j.connector.graphdatabase.exception.GraphDatabaseConnectionException;
