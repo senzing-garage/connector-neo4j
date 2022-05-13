@@ -8,9 +8,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.senzing.listener.senzing.service.exception.ServiceExecutionException;
-import com.senzing.listener.senzing.service.exception.ServiceSetupException;
-import com.senzing.listener.senzing.service.g2.G2Service;
+import com.senzing.listener.service.exception.ServiceExecutionException;
+import com.senzing.listener.service.exception.ServiceSetupException;
+import com.senzing.listener.service.g2.G2Service;
 import com.senzing.neo4j.connector.config.AppConfiguration;
 import com.senzing.neo4j.connector.config.ConfigKeys;
 import com.senzing.neo4j.connector.graphdatabase.neo4j.CypherQuery;
@@ -184,7 +184,7 @@ public class Neo4jConnectorServiceTest {
   }
 
   @Test
-  public void mainServiceWithWrongGraphType() throws com.senzing.listener.senzing.service.exception.ServiceSetupException {
+  public void mainServiceWithWrongGraphType() throws com.senzing.listener.service.exception.ServiceSetupException {
     new MockUp<AppConfiguration>() {
       @Mock
       public String getConfigValue(String configParameter) {
@@ -202,7 +202,7 @@ public class Neo4jConnectorServiceTest {
     try {
       new Neo4jConnectorService().init("{}");;
       fail("Should have thrown an exception");
-    } catch (com.senzing.listener.senzing.service.exception.ServiceSetupException e) {
+    } catch (com.senzing.listener.service.exception.ServiceSetupException e) {
       assertThat(e.getMessage(), is(equalTo("Invalid graph database type specified: titan")));
     }
   }

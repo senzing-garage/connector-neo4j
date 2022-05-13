@@ -8,11 +8,11 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 
-import com.senzing.listener.senzing.communication.ConsumerType;
-import com.senzing.listener.senzing.communication.MessageConsumer;
-import com.senzing.listener.senzing.communication.MessageConsumerFactory;
-import com.senzing.listener.senzing.data.ConsumerCommandOptions;
-import com.senzing.listener.senzing.service.exception.ServiceSetupException;
+import com.senzing.listener.communication.ConsumerType;
+import com.senzing.listener.communication.MessageConsumer;
+import com.senzing.listener.communication.MessageConsumerFactory;
+import com.senzing.listener.service.exception.ServiceSetupException;
+import com.senzing.neo4j.connector.cmdline.CommandOptions;
 import com.senzing.neo4j.connector.service.Neo4jConnectorService;
 
 /**
@@ -33,7 +33,7 @@ public class Neo4jConnector {
    * @throws MessageConsumerSetupException
    */
   public void run(String config) throws ServiceSetupException, Exception {
-    String consumerType = getConfigValue(config, ConsumerCommandOptions.CONSUMER_TYPE);
+    String consumerType = getConfigValue(config, CommandOptions.CONSUMER_TYPE);
     if (consumerType == null || consumerType.isEmpty()) {
       consumerType = "rabbitmq";
     }
@@ -58,7 +58,7 @@ public class Neo4jConnector {
         cnt = 0;
       }
     }
-    service.cleanUp();
+    service.destroy();
   }
 
   private String getConfigValue(String config, String key) {

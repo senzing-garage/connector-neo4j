@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.senzing</groupId>
   <artifactId>neo4j-connector</artifactId>
-  <version>0.1-SNAPSHOT</version>
+  <version>0.1.0</version>
   <packaging>jar</packaging>
   <name>G2 Neo4J Connector</name>
   <description>G2 Neo4J connector app</description>
@@ -19,7 +19,7 @@
     <dependency>
       <groupId>com.senzing</groupId>
       <artifactId>senzing-listener</artifactId>
-      <version>0.0.1</version>
+      <version>0.1.0</version>
     </dependency>
     <!-- tag::bolt-dependency[] -->
     <dependency>
@@ -62,11 +62,6 @@
       <version>20090211</version>
     </dependency>
     <dependency>
-      <groupId>com.senzing</groupId>
-      <artifactId>g2</artifactId>
-      <version>[1.14.0-SNAPSHOT,2.999.999)</version>
-    </dependency>
-    <dependency>
       <groupId>com.rabbitmq</groupId>
       <artifactId>amqp-client</artifactId>
       <version>5.8.0</version>
@@ -78,6 +73,19 @@
       <version>1.4</version>
     </dependency>
   </dependencies>
+
+  <repositories>
+    <repository>
+      <id>mvn-repo</id>
+      <url>http://github.com/Senzing/senzing-listener</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
 
   <build>
     <resources>
