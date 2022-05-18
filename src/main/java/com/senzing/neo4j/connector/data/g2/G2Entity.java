@@ -24,36 +24,31 @@ public class G2Entity {
   // Entity fields
   public static final String ENTITY_ID_FIELD = "ENTITY_ID";
   private final static String ENTITY_NAME = "ENTITY_NAME";
-  private static final String ENTITY_LENS_CODE = "LENS_CODE";
   private static final String ENTITY_TYPE = "ENTITY_TYPE";
   private static final String ENTITY_FEAT_DESC = "FEAT_DESC";
-  private static final String[] ENTITY_FIELDS = { ENTITY_ID_FIELD, ENTITY_NAME, ENTITY_LENS_CODE };
+  private static final String[] ENTITY_FIELDS = { ENTITY_ID_FIELD, ENTITY_NAME };
 
   // Relationship fields
   private static final String RELATIONSHIP_MATCH_KEY = "MATCH_KEY";
   private static final String RELATIONSHIP_MATCH_LEVEL = "MATCH_LEVEL";
   private static final String RELATIONSHIP_MATCH_LEVEL_CODE = "MATCH_LEVEL_CODE";
-  private static final String RELATIONSHIP_MATCH_SCORE = "MATCH_SCORE";
   private static final String RELATIONSHIP_ERRULE_CODE = "ERRULE_CODE";
-  private static final String RELATIONSHIP_REF_SCORE = "REF_SCORE";
   private static final String RELATIONSHIP_IS_DISCLOSED = "IS_DISCLOSED";
   private static final String RELATIONSHIP_IS_AMBIGUOUS = "IS_AMBIGUOUS";
   private static final String[] RELATIONSHIP_FIELDS = { RELATIONSHIP_MATCH_KEY, RELATIONSHIP_MATCH_LEVEL,
-      RELATIONSHIP_MATCH_LEVEL_CODE, RELATIONSHIP_MATCH_SCORE, RELATIONSHIP_ERRULE_CODE, RELATIONSHIP_REF_SCORE,
-      RELATIONSHIP_IS_DISCLOSED, RELATIONSHIP_IS_AMBIGUOUS };
+      RELATIONSHIP_MATCH_LEVEL_CODE, RELATIONSHIP_ERRULE_CODE, RELATIONSHIP_IS_DISCLOSED, 
+      RELATIONSHIP_IS_AMBIGUOUS };
 
   // Record fields
   public static final String RECORD_ID_FIELD = "RECORD_ID";
   public static final String RECORD_DATA_SOURCE = "DATA_SOURCE";
   private static final String RECORD_MATCH_KEY = "MATCH_KEY";
-  private static final String RECORD_MATCH_SCORE = "MATCH_SCORE";
   private static final String RECORD_ERRULE_CODE = "ERRULE_CODE";
-  private static final String RECORD_REF_SCORE = "REF_SCORE";
   private static final String RECORD_MATCH_LEVEL = "MATCH_LEVEL";
   private static final String RECORD_MATCH_LEVEL_CODE = "MATCH_LEVEL_CODE";
   private static final String G2_RECORD_ID_FIELD = "INTERNAL_ID";
   private static final String[] RECORD_FIELDS = { RECORD_ID_FIELD, RECORD_DATA_SOURCE, RECORD_MATCH_KEY,
-      RECORD_MATCH_SCORE, RECORD_ERRULE_CODE, RECORD_REF_SCORE, RECORD_MATCH_LEVEL, RECORD_MATCH_LEVEL_CODE };
+      RECORD_ERRULE_CODE, RECORD_MATCH_LEVEL, RECORD_MATCH_LEVEL_CODE };
 
   private Long entityId;
   private String entityType;
