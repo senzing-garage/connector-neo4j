@@ -36,68 +36,58 @@ public class G2EntityTest {
     assertThat(g2Entity.getRecords(), is(notNullValue()));
     assertThat(g2Entity.getRelationships(), is(notNullValue()));
 
-    assertThat(g2Entity.getFeatures().size(), is(equalTo(9)));
+    assertThat(g2Entity.getFeatures().size(), is(equalTo(8)));
     assertThat(g2Entity.getRecords().size(), is(equalTo(3)));
     assertThat(g2Entity.getRelationships().size(), is(equalTo(3)));
 
-    assertThat(g2Entity.getFeatures().get("LENS_CODE"), is(equalTo("DEFAULT")));
     assertThat(g2Entity.getFeatures().get("ENTITY_NAME"), is(equalTo("JENNY SMITH")));
 
     assertThat(g2Entity.getRecords().get(2L), is(notNullValue()));
     assertThat(g2Entity.getRecords().get(4L), is(notNullValue()));
     assertThat(g2Entity.getRecords().get(6L), is(notNullValue()));
 
-    assertThat(g2Entity.getRecords().get(2L).size(), is(equalTo(4)));
-    assertThat(g2Entity.getRecords().get(4L).size(), is(equalTo(8)));
-    assertThat(g2Entity.getRecords().get(6L).size(), is(equalTo(8)));
+    assertThat(g2Entity.getRecords().get(2L).size(), is(equalTo(3)));
+    assertThat(g2Entity.getRecords().get(4L).size(), is(equalTo(6)));
+    assertThat(g2Entity.getRecords().get(6L).size(), is(equalTo(6)));
 
     assertThat(g2Entity.getRecords().get(2L).get("DATA_SOURCE"), is(equalTo("PEOPLE")));
     assertThat(g2Entity.getRecords().get(2L).get("RECORD_ID"), is(equalTo("1001-2")));
-    assertThat(g2Entity.getRecords().get(2L).get("REF_SCORE"), is(equalTo(0)));
     assertThat(g2Entity.getRecords().get(2L).get("MATCH_LEVEL"), is(equalTo(0)));
 
     assertThat(g2Entity.getRecords().get(4L).get("DATA_SOURCE"), is(equalTo("PEOPLE")));
     assertThat(g2Entity.getRecords().get(4L).get("RECORD_ID"), is(equalTo("1002-2")));
-    assertThat(g2Entity.getRecords().get(4L).get("REF_SCORE"), is(equalTo(8)));
     assertThat(g2Entity.getRecords().get(4L).get("MATCH_LEVEL"), is(equalTo(1)));
 
     assertThat(g2Entity.getRecords().get(6L).get("DATA_SOURCE"), is(equalTo("PEOPLE")));
     assertThat(g2Entity.getRecords().get(6L).get("RECORD_ID"), is(equalTo("1003-2")));
-    assertThat(g2Entity.getRecords().get(2L).get("REF_SCORE"), is(equalTo(0)));
     assertThat(g2Entity.getRecords().get(6L).get("MATCH_LEVEL"), is(equalTo(1)));
 
     assertThat(g2Entity.getRelationships().get(1001L), is(notNullValue()));
     assertThat(g2Entity.getRelationships().get(1002L), is(notNullValue()));
     assertThat(g2Entity.getRelationships().get(1003L), is(notNullValue()));
 
-    assertThat(g2Entity.getRelationships().get(1001L).size(), is(equalTo(8)));
-    assertThat(g2Entity.getRelationships().get(1002L).size(), is(equalTo(8)));
-    assertThat(g2Entity.getRelationships().get(1003L).size(), is(equalTo(8)));
+    assertThat(g2Entity.getRelationships().get(1001L).size(), is(equalTo(6)));
+    assertThat(g2Entity.getRelationships().get(1002L).size(), is(equalTo(6)));
+    assertThat(g2Entity.getRelationships().get(1003L).size(), is(equalTo(6)));
 
     assertThat(g2Entity.getRelationships().get(1001L).get("MATCH_LEVEL"), is(equalTo(11)));
     assertThat(g2Entity.getRelationships().get(1001L).get("MATCH_LEVEL_CODE"), is(equalTo("DISCLOSED")));
     assertThat(g2Entity.getRelationships().get(1001L).get("MATCH_KEY"), is(equalTo("+OWNERSHIP")));
-    assertThat(g2Entity.getRelationships().get(1001L).get("MATCH_SCORE"), is(equalTo("10")));
     assertThat(g2Entity.getRelationships().get(1001L).get("ERRULE_CODE"), is(equalTo("DISCLOSED")));
-    assertThat(g2Entity.getRelationships().get(1001L).get("REF_SCORE"), is(equalTo(0)));
     assertThat(g2Entity.getRelationships().get(1001L).get("IS_DISCLOSED"), is(equalTo(1)));
     assertThat(g2Entity.getRelationships().get(1001L).get("IS_AMBIGUOUS"), is(equalTo(0)));
 
     assertThat(g2Entity.getRelationships().get(1002L).get("MATCH_LEVEL"), is(equalTo(11)));
     assertThat(g2Entity.getRelationships().get(1002L).get("MATCH_LEVEL_CODE"), is(equalTo("DISCLOSED")));
     assertThat(g2Entity.getRelationships().get(1002L).get("MATCH_KEY"), is(equalTo("+OWNERSHIP")));
-    assertThat(g2Entity.getRelationships().get(1002L).get("MATCH_SCORE"), is(equalTo("10")));
     assertThat(g2Entity.getRelationships().get(1002L).get("ERRULE_CODE"), is(equalTo("DISCLOSED")));
-    assertThat(g2Entity.getRelationships().get(1002L).get("REF_SCORE"), is(equalTo(0)));
     assertThat(g2Entity.getRelationships().get(1002L).get("IS_DISCLOSED"), is(equalTo(1)));
     assertThat(g2Entity.getRelationships().get(1002L).get("IS_AMBIGUOUS"), is(equalTo(0)));
 
     assertThat(g2Entity.getRelationships().get(1003L).get("MATCH_LEVEL"), is(equalTo(11)));
     assertThat(g2Entity.getRelationships().get(1003L).get("MATCH_LEVEL_CODE"), is(equalTo("DISCLOSED")));
     assertThat(g2Entity.getRelationships().get(1003L).get("MATCH_KEY"), is(equalTo("+OWNERSHIP")));
-    assertThat(g2Entity.getRelationships().get(1003L).get("MATCH_SCORE"), is(equalTo("10")));
     assertThat(g2Entity.getRelationships().get(1003L).get("ERRULE_CODE"), is(equalTo("DISCLOSED")));
-    assertThat(g2Entity.getRelationships().get(1003L).get("REF_SCORE"), is(equalTo(0)));
     assertThat(g2Entity.getRelationships().get(1003L).get("IS_DISCLOSED"), is(equalTo(1)));
     assertThat(g2Entity.getRelationships().get(1003L).get("IS_AMBIGUOUS"), is(equalTo(0)));
 
