@@ -12,7 +12,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
-    <neo4j.version>4.4.8</neo4j.version>
+    <neo4j.version>4.4.9</neo4j.version>
   </properties>
 
   <dependencies>
