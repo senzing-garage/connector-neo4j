@@ -36,7 +36,7 @@
     <dependency>
       <groupId>org.jmockit</groupId>
       <artifactId>jmockit</artifactId>
-      <version>1.38</version>
+      <version>1.49</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -153,7 +153,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
-        <version>3.2.0</version>
+        <version>3.3.0</version>
         <configuration>
           <encoding>UTF-8</encoding>
         </configuration>
