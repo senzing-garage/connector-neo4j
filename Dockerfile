@@ -7,18 +7,11 @@ ARG BASE_BUILDER_IMAGE=senzing/base-image-debian:1.0.9
 
 FROM ${BASE_BUILDER_IMAGE} as builder
 
-# Set Shell to use for RUN commands in builder step.
-
 ENV REFRESHED_AT=2022-06-27
 
 LABEL Name="senzing/connector-neo4j-builder" \
       Maintainer="support@senzing.com" \
       Version="1.0.0"
-
-# Build arguments.
-
-ARG SENZING_G2_JAR_RELATIVE_PATHNAME=unknown
-ARG SENZING_G2_JAR_VERSION=unknown
 
 # Set environment variables.
 
@@ -27,22 +20,15 @@ ENV SENZING_G2_DIR=${SENZING_ROOT}/g2
 ENV PYTHONPATH=${SENZING_ROOT}/g2/python
 ENV LD_LIBRARY_PATH=${SENZING_ROOT}/g2/lib:${SENZING_ROOT}/g2/lib/debian
 
-# Copy Repo files to Builder step.
+# Build "connector-neo4j.jar"
 
 COPY . /connector-neo4j
-
-# Run the "make" command to create the artifacts.
-
 WORKDIR /connector-neo4j
 
 RUN export CONNECTOR_NEO4J_JAR_VERSION=$(mvn "help:evaluate" -Dexpression=project.version -q -DforceStdout) \
- && make \
-     SENZING_G2_JAR_PATHNAME=/connector-neo4j/${SENZING_G2_JAR_RELATIVE_PATHNAME} \
-     SENZING_G2_JAR_VERSION=${SENZING_G2_JAR_VERSION} \
-     package \
+ && make package \
  && cp /connector-neo4j/target/neo4j-connector-${CONNECTOR_NEO4J_JAR_VERSION}.jar "/neo4j-connector.jar" \
- && cp -r /connector-neo4j/target/libs "/libs" \
- && cp -r /connector-neo4j/target/conf "/conf"
+ && cp -r /connector-neo4j/target/libs "/libs"
 
 # -----------------------------------------------------------------------------
 # Stage: Final
@@ -85,7 +71,6 @@ EXPOSE 8080
 
 COPY --from=builder "/neo4j-connector.jar" "/app/neo4j-connector.jar"
 COPY --from=builder "/libs" "/app/libs"
-COPY --from=builder "/conf" "/app/conf"
 
 # Make non-root container.
 
