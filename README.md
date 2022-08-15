@@ -251,22 +251,12 @@ see [Environment Variables](https://github.com/Senzing/knowledge-base/blob/main/
 
 #### Build docker image for development
 
-1. :pencil2: Set environment variables.
-   Example:
-
-    ```console
-    export SENZING_G2_DIR=/opt/senzing/g2
-    ```
-
 1. Build docker image.
 
     ```console
     cd ${GIT_REPOSITORY_DIR}
 
-    sudo make \
-        SENZING_G2_JAR_PATHNAME=${SENZING_G2_DIR}/lib/g2.jar \
-        SENZING_G2_JAR_VERSION=$(cat ${SENZING_G2_DIR}/g2BuildVersion.json | jq --raw-output '.VERSION') \
-        docker-build
+    sudo make docker-build
     ```
 
     Note: `sudo make docker-build-development-cache` can be used to create cached docker layers.
@@ -274,22 +264,6 @@ see [Environment Variables](https://github.com/Senzing/knowledge-base/blob/main/
 
 ### Run docker container
 
-1. :pencil2: Set environment variables.
-
-    - **[SENZING_DATA_VERSION_DIR](https://github.com/Senzing/knowledge-base/blob/main/lists/environment-variables.md#senzing_data_version_dir)**
-    - **[SENZING_ETC_DIR](https://github.com/Senzing/knowledge-base/blob/main/lists/environment-variables.md#senzing_etc_dir)**
-    - **[SENZING_G2_DIR](https://github.com/Senzing/knowledge-base/blob/main/lists/environment-variables.md#senzing_g2_dir)**
-    - **[SENZING_VAR_DIR](https://github.com/Senzing/knowledge-base/blob/main/lists/environment-variables.md#senzing_var_dir)**
-
-    In addition the path to the project directory must be set.  The project directory is where the G2 project was created.  See the [Quick Start Guide](https://senzing.zendesk.com/hc/en-us/articles/115002408867-Quickstart-Guide).
-
-    As an example:
-
-    ```console
-    export PROJECT_DIR=/home/<USER>/senzing
-    ```
-    Where USER is the name of the user account.
- 
 1. Prepare for running.
 
     Ensure the steps in [Preparation for running](preparation-for-running) have been executed before running the docker container. 
@@ -309,11 +283,6 @@ see [Environment Variables](https://github.com/Senzing/knowledge-base/blob/main/
 
     ```console
     sudo docker run \
-      --volume ${SENZING_DATA_VERSION_DIR}:/opt/senzing/data \
-      --volume ${SENZING_ETC_DIR}:/etc/opt/senzing \
-      --volume ${SENZING_G2_DIR}:/opt/senzing/g2 \
-      --volume ${SENZING_VAR_DIR}:/var/opt/senzing \
-      --volume ${PROJECT_DIR}:${PROJECT_DIR} \
       --network ncn \
       senzing/connector-neo4j \
           -iniFile /home/user/senzing/etc/G2Module.ini \
