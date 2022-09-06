@@ -10,7 +10,6 @@ import org.json.JSONException;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import com.senzing.listener.service.exception.ServiceExecutionException;
 import com.senzing.listener.service.exception.ServiceSetupException;
@@ -20,10 +19,8 @@ import com.senzing.neo4j.connector.graphdatabase.exception.GraphDatabaseConnecti
 import com.senzing.neo4j.connector.graphdatabase.neo4j.Neo4jConnection;
 import mockit.Mock;
 import mockit.MockUp;
-import mockit.integration.junit4.JMockit;
 
 
-@RunWith(JMockit.class)
 public class Neo4jServiceTest {
 
   static Neo4jService service = null;

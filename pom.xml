@@ -13,6 +13,7 @@
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
     <neo4j.version>4.4.9</neo4j.version>
+    <jmockit.version>1.49</jmockit.version>
   </properties>
 
   <dependencies>
@@ -36,7 +37,7 @@
     <dependency>
       <groupId>org.jmockit</groupId>
       <artifactId>jmockit</artifactId>
-      <version>1.49</version>
+      <version>${jmockit.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -183,7 +184,9 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>2.22.2</version>
         <configuration>
-          <argLine>-Djdk.attach.allowAttachSelf</argLine>
+          <argLine>
+            -javaagent:"${settings.localRepository}"/org/jmockit/jmockit/${jmockit.version}/jmockit-${jmockit.version}.jar
+          </argLine>
         </configuration>
       </plugin>
     </plugins>
