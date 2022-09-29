@@ -11,7 +11,7 @@ ENV REFRESHED_AT=2022-09-27
 
 LABEL Name="senzing/connector-neo4j-builder" \
       Maintainer="support@senzing.com" \
-      Version="1.0.0"
+      Version="0.1.2"
 
 # Set environment variables.
 
@@ -40,7 +40,7 @@ ENV REFRESHED_AT=2022-09-27
 
 LABEL Name="senzing/connector-neo4j" \
       Maintainer="support@senzing.com" \
-      Version="1.8.1"
+      Version="0.1.2"
 
 HEALTHCHECK CMD ["/app/healthcheck.sh"]
 
