@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=senzing/senzing-base:1.6.12
+ARG BASE_IMAGE=senzing/senzingapi-runtime:3.3.0
 ARG BASE_BUILDER_IMAGE=senzing/base-image-debian:1.0.10
 
 # -----------------------------------------------------------------------------
@@ -11,7 +11,7 @@ ENV REFRESHED_AT=2022-09-27
 
 LABEL Name="senzing/connector-neo4j-builder" \
       Maintainer="support@senzing.com" \
-      Version="0.1.2"
+      Version="0.2.0"
 
 # Set environment variables.
 
@@ -40,7 +40,7 @@ ENV REFRESHED_AT=2022-09-27
 
 LABEL Name="senzing/connector-neo4j" \
       Maintainer="support@senzing.com" \
-      Version="0.1.2"
+      Version="0.2.0"
 
 HEALTHCHECK CMD ["/app/healthcheck.sh"]
 
