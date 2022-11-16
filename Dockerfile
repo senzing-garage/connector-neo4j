@@ -16,9 +16,15 @@ LABEL Name="senzing/connector-neo4j-builder" \
 # Set environment variables.
 
 ENV SENZING_ROOT=/opt/senzing
-ENV SENZING_G2_DIR=${SENZING_ROOT}/g2
 ENV PYTHONPATH=${SENZING_ROOT}/g2/python
 ENV LD_LIBRARY_PATH=${SENZING_ROOT}/g2/lib:${SENZING_ROOT}/g2/lib/debian
+
+# Install java-17
+# This is a requirement for neo4j java client 5.0 and higher.
+RUN wget -qO - https://packages.adoptium.net/artifactory/api/gpg/key/public | apt-key add - \
+ && echo "deb https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | tee /etc/apt/sources.list.d/adoptium.list \
+ && apt-get update \
+ && apt-get -y install temurin-17-jdk
 
 # Build "connector-neo4j.jar"
 
@@ -50,17 +56,9 @@ USER root
 
 # Install packages via apt.
 
-RUN apt update \
- && apt -y install \
+RUN apt-get update \
+ && apt-get -y install \
       software-properties-common \
- && rm -rf /var/lib/apt/lists/*
-
-# Install Java-11.
-
-RUN wget -qO - https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public | apt-key add - \
- && add-apt-repository --yes https://adoptopenjdk.jfrog.io/adoptopenjdk/deb/ \
- && apt update \
- && apt install -y adoptopenjdk-11-hotspot \
  && rm -rf /var/lib/apt/lists/*
 
 # Service exposed on port 8080.
