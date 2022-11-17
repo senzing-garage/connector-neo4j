@@ -33,6 +33,7 @@ public class Neo4jService implements GraphService {
   private static final String DEFAULT_EDGE_TYPE = "KNOWS";
   private static final String DEFAULT_RECORD_EDGE_TYPE = "BELONGS_TO";
   private static final String DEFAULT_EDGE_G2_TAG = "MATCH_KEY";
+  private static final String ENTITY_NODE_IDENTIFIER = "ENTITY";
   private static final String EMPTY_STRING = "";
 
   public static Neo4jService generateNeo4jService(String config) throws ServiceSetupException {
@@ -130,7 +131,7 @@ public class Neo4jService implements GraphService {
     Map<String, Object> features = new HashMap<>();
     features.putAll(entity.getFeatures());
 
-    CypherQuery cypherQuery = CypherQueryGenerator.createNodeQuery(entity.getEntityType(), features);
+    CypherQuery cypherQuery = CypherQueryGenerator.createNodeQuery(ENTITY_NODE_IDENTIFIER, features);
     runQuery(cypherQuery);
   }
 
