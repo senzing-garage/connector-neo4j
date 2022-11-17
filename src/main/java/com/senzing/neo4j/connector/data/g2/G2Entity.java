@@ -51,7 +51,6 @@ public class G2Entity {
       RECORD_ERRULE_CODE, RECORD_MATCH_LEVEL, RECORD_MATCH_LEVEL_CODE };
 
   private Long entityId;
-  private String entityType;
   private Map<String, Object> features;
   private Map<Long, Map<String, Object>> relationships;
   private Map<Long, Map<String, Object>> records;
@@ -109,9 +108,6 @@ public class G2Entity {
     // Gather record information.
     JSONArray jsonRecords = resolvedEntity.getJSONArray(RECORDS_TAG);
     populateFeatureMap(jsonRecords, RECORD_FIELDS, G2_RECORD_ID_FIELD, records);
-    // All the records should have same entity type - grab the first one for the
-    // entity type.
-    entityType = ((JSONObject) jsonRecords.get(0)).getString(ENTITY_TYPE);
   }
 
   @SuppressWarnings("unchecked")
@@ -166,14 +162,6 @@ public class G2Entity {
 
   public void setEntityId(Long entityId) {
     this.entityId = entityId;
-  }
-
-  public String getEntityType() {
-    return entityType;
-  }
-
-  public void setEntityType(String entityType) {
-    this.entityType = entityType;
   }
 
   public Map<String, Object> getFeatures() {

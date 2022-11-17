@@ -30,7 +30,6 @@ public class G2EntityTest {
 
   private void validateG2Entity(G2Entity g2Entity) {
     assertThat(g2Entity.getEntityId(), is(2L));
-    assertThat(g2Entity.getEntityType(), is("PEOPLE"));
 
     assertThat(g2Entity.getFeatures(), is(notNullValue()));
     assertThat(g2Entity.getRecords(), is(notNullValue()));
@@ -98,13 +97,11 @@ public class G2EntityTest {
     G2Entity g2Entity = new G2Entity();
 
     assertThat(g2Entity.getEntityId(), is(nullValue()));
-    assertThat(g2Entity.getEntityType(), is(nullValue()));
     assertThat(g2Entity.getFeatures().size(), is(0));
     assertThat(g2Entity.getRecords().size(), is(0));
     assertThat(g2Entity.getRelationships().size(), is(0));
 
     g2Entity.setEntityId(999L);
-    g2Entity.setEntityType("PEOPLE");
     Map<String, Object> bf = new HashMap<>();
     bf.put("1", "test");
     g2Entity.setFeatures(bf);
@@ -121,7 +118,6 @@ public class G2EntityTest {
     g2Entity.setRelationships(rel);
 
     assertThat(g2Entity.getEntityId(), is(999L));
-    assertThat(g2Entity.getEntityType(), is("PEOPLE"));
     assertThat(g2Entity.getFeatures().size(), is(1));
     assertThat(g2Entity.getRecords().size(), is(3));
     assertThat(g2Entity.getRelationships().size(), is(4));
