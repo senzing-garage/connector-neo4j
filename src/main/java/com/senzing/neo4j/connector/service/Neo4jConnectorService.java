@@ -20,6 +20,7 @@ import com.senzing.listener.service.g2.G2Service;
 import com.senzing.neo4j.connector.cmdline.CommandOptions;
 import com.senzing.neo4j.connector.config.AppConfiguration;
 import com.senzing.neo4j.connector.config.ConfigKeys;
+import com.senzing.neo4j.connector.config.EnvVariables;
 import com.senzing.neo4j.connector.data.g2.G2Entity;
 import com.senzing.neo4j.connector.service.graph.GraphService;
 import com.senzing.neo4j.connector.service.graph.GraphServiceFactory;
@@ -54,6 +55,7 @@ public class Neo4jConnectorService implements ListenerService {
     // Get configuration
     String g2IniFile = null;
     String graphDbType = null;
+    String senzingConfig = System.getenv(EnvVariables.SENZING_ENGINE_CONFIGURATION_JSON);
     try {
       JSONObject configObject = new JSONObject(config);
       g2IniFile = configObject.optString(CommandOptions.INI_FILE);
@@ -68,21 +70,25 @@ public class Neo4jConnectorService implements ListenerService {
     }
 
     // Verify that required values are set.
-    List<String> configParams = new ArrayList<>();
-    if (g2IniFile == null || g2IniFile.isEmpty()) {
-      configParams.add(ConfigKeys.G2_INI_FILE);
+    List<String> missingConfigParams = new ArrayList<>();
+    if ((g2IniFile == null || g2IniFile.isEmpty()) && (senzingConfig == null || senzingConfig.isEmpty())) {
+      missingConfigParams.add(ConfigKeys.G2_INI_FILE);
     }
     if (graphDbType == null || graphDbType.isEmpty()) {
-      configParams.add(ConfigKeys.GRAPH_DATABASE_TYPE);
+      missingConfigParams.add(ConfigKeys.GRAPH_DATABASE_TYPE);
     }
-    if (configParams.size() > 0) {
+    if (missingConfigParams.size() > 0) {
       StringBuilder errorMessage = new StringBuilder("Following parameters missing from config file: ");
-      errorMessage.append(String.join(", ", configParams));
+      errorMessage.append(String.join(", ", missingConfigParams));
       throw new ServiceSetupException(errorMessage.toString());
     }
 
     g2Service = new G2Service();
-    g2Service.init(g2IniFile);
+    if (g2IniFile != null && !g2IniFile.isEmpty()) {
+      g2Service.init(g2IniFile);
+    } else {
+      g2Service.initWithG2Config(senzingConfig);
+    }
 
     GraphType graphType;
     try {
