@@ -4,6 +4,11 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -12,7 +17,9 @@ import com.senzing.listener.service.exception.ServiceSetupException;
 import com.senzing.listener.service.g2.G2Service;
 import com.senzing.neo4j.connector.config.AppConfiguration;
 import com.senzing.neo4j.connector.config.ConfigKeys;
+import com.senzing.neo4j.connector.graphdatabase.exception.GraphDatabaseConnectionException;
 import com.senzing.neo4j.connector.graphdatabase.neo4j.CypherQuery;
+import com.senzing.neo4j.connector.graphdatabase.neo4j.Neo4jConnection;
 import com.senzing.neo4j.connector.service.graph.neo4j.Neo4jService;
 
 import mockit.Mock;
@@ -39,28 +46,29 @@ public class Neo4jConnectorServiceTest {
       public void removeEntity(long g2EntiyId) throws ServiceExecutionException {
       }
     };
-    new MockUp<Neo4jService>() {
+    new MockUp<Neo4jConnection>() {
       @Mock
-      public void init(String uri) throws ServiceSetupException {
-
+      public void connect(String uri) throws GraphDatabaseConnectionException {
       }
     };
   }
 
   @Test
   public void processMessageWorksOK() throws ServiceExecutionException, ServiceSetupException {
-    new MockUp<Neo4jService>() {
-      @Mock
-      public void runQuery(CypherQuery cypherQuery) throws ServiceExecutionException {
-        if (cypherQuery.getQuery().indexOf("DELETE") > 0) {
-          deleteCount++;
-        }
-        if (cypherQuery.getQuery().indexOf("relProps") > 0) {
-          relationshipAddCount++;
-        }
-        if (cypherQuery.getQuery().indexOf("createProps") > 0) {
-          nodeAddCount++;
-        }
+    new MockUp<Neo4jConnection>() {
+    @Mock
+      public Iterator<Map<String, Object>> runQuery(String query, Map<String, Object> params) throws GraphDatabaseConnectionException {
+        if (query.indexOf("DELETE") > 0) {
+            deleteCount++;
+          }
+          if (query.indexOf("relProps") > 0) {
+            relationshipAddCount++;
+          }
+          if (query.indexOf("createProps") > 0) {
+            nodeAddCount++;
+          }
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        return list.iterator();
       }
     };
     new MockUp<AppConfiguration>() {
@@ -80,10 +88,10 @@ public class Neo4jConnectorServiceTest {
 
   @Test(expected = ServiceExecutionException.class)
   public void processMessageExecutionFaliure() throws ServiceSetupException, ServiceExecutionException {
-    new MockUp<Neo4jService>() {
+    new MockUp<Neo4jConnection>() {
       @Mock
-      public void runQuery(CypherQuery cypherQuery) throws ServiceExecutionException {
-        throw new ServiceExecutionException("failure");
+      public Iterator<Map<String, Object>> runQuery(String query, Map<String, Object> params) throws GraphDatabaseConnectionException {
+        throw new GraphDatabaseConnectionException("failure");
       }
     };
     new MockUp<AppConfiguration>() {

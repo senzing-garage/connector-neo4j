@@ -79,7 +79,8 @@ public class Neo4jServiceTest {
     new MockUp<Neo4jConnection>() {
       @Mock
       public Iterator<Map<String, Object>> runQuery(String query, Map<String, Object> params) throws GraphDatabaseConnectionException {
-        assertThat(query, is(equalTo("CREATE (:PEOPLE $createProps)")));
+        assertThat(query, is(equalTo("CREATE (:ENTITY $createProps)")));
+        //assertThat(query, is(equalTo("CREATE (:PEOPLE $createProps)")));
         assertThat(params.size(), is(equalTo(1)));
         return null;
       }

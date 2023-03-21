@@ -15,12 +15,14 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.senzing.listener.communication.ConsumerType;
 import com.senzing.listener.communication.rabbitmq.RabbitMQConsumer;
 import com.senzing.neo4j.connector.cmdline.CommandOptions;
 import com.senzing.neo4j.connector.config.AppConfiguration;
 import com.senzing.neo4j.connector.config.ConfigKeys;
+import com.senzing.neo4j.connector.config.EnvVariables;
 
 /**
  * This application feeds G2 data into a data mart. It reads information via a
@@ -31,13 +33,18 @@ public class Neo4jConnectorApplication {
   private static final String RABBITMQ_CONSUMER_TYPE = ConsumerType.RABBIT_MQ.toString();
 
   private static Map<String, Object> configValues;
+  private static String g2ConfigString;
 
   public static void main(String[] args) {
     configValues = new HashMap<>();
     configValues.put(CommandOptions.CONSUMER_TYPE, RABBITMQ_CONSUMER_TYPE);
     try {
       processConfigFileConfiguration();
-      // Process the command line arguments after the config file since they override config file values.
+
+      // Process env variables after config file since they override config file values.
+      processEnvironmentVariableParameters();
+
+      // Process the command line arguments after the config file and env params since they override config file values and env params.
       processArguments(args);
 
       validateCommandLineParams();
@@ -64,6 +71,22 @@ public class Neo4jConnectorApplication {
       //configValues.put(CommandOptions.CONSUMER_TYPE, config.getConfigValue(ConfigKeys.CONSUMER_TYPE));
     } catch (IOException e) {
       System.out.println("Configuration file not found. Expecting command line arguments.");
+    }
+  }
+
+  private static void processEnvironmentVariableParameters() throws ParseException, JSONException {
+    // Check for G2 configuration as environment variable
+    String configString = System.getenv(EnvVariables.SENZING_ENGINE_CONFIGURATION_JSON);
+    if (configString != null && !configString.isEmpty()) {
+      try {
+        JSONObject obj = new JSONObject(configString);
+        g2ConfigString = configString;
+        // Block out the ini file value since the config string will be used instead.
+        configValues.put(CommandOptions.INI_FILE, "");
+      } catch (JSONException e) {
+        System.out.println("Invalid G2 configuration.");
+        throw e;
+      }
     }
   }
 
@@ -98,7 +121,9 @@ public class Neo4jConnectorApplication {
 
   private static void validateCommandLineParams() {
     List<String> unsetParameters = new ArrayList<>();
-    checkParameter(unsetParameters, CommandOptions.INI_FILE);
+    if (g2ConfigString != null && g2ConfigString.isEmpty()) {
+      checkParameter(unsetParameters, CommandOptions.INI_FILE);
+    }
     checkParameter(unsetParameters, RabbitMQConsumer.MQ_HOST);
     checkParameter(unsetParameters, RabbitMQConsumer.MQ_QUEUE);
 
