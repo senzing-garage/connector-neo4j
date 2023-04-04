@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=senzing/senzingapi-runtime:3.4.0
+ARG BASE_IMAGE=senzing/senzingapi-runtime:3.5.0
 ARG BASE_BUILDER_IMAGE=senzing/base-image-debian:1.0.10
 
 # -----------------------------------------------------------------------------
@@ -7,11 +7,11 @@ ARG BASE_BUILDER_IMAGE=senzing/base-image-debian:1.0.10
 
 FROM ${BASE_BUILDER_IMAGE} as builder
 
-ENV REFRESHED_AT=2023-01-12
+ENV REFRESHED_AT=2023-04-03
 
 LABEL Name="senzing/connector-neo4j-builder" \
       Maintainer="support@senzing.com" \
-      Version="0.2.1"
+      Version="0.2.2"
 
 # Set environment variables.
 
@@ -42,11 +42,11 @@ RUN export CONNECTOR_NEO4J_JAR_VERSION=$(mvn "help:evaluate" -Dexpression=projec
 
 FROM ${BASE_IMAGE}
 
-ENV REFRESHED_AT=2023-01-12
+ENV REFRESHED_AT=2023-04-03
 
 LABEL Name="senzing/connector-neo4j" \
       Maintainer="support@senzing.com" \
-      Version="0.2.1"
+      Version="0.2.2"
 
 HEALTHCHECK CMD ["/app/healthcheck.sh"]
 
