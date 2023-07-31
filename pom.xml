@@ -12,7 +12,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
-    <neo4j.version>5.9.0</neo4j.version>
+    <neo4j.version>5.10.0</neo4j.version>
     <jmockit.version>1.49</jmockit.version>
   </properties>
 
