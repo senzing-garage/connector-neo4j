@@ -63,10 +63,10 @@ public class Neo4jConnectorApplication {
       configValues.put(CommandOptions.CONSUMER_TYPE, RABBITMQ_CONSUMER_TYPE);
       configValues.put(CommandOptions.INI_FILE, config.getConfigValue(ConfigKeys.G2_INI_FILE));
       configValues.put(CommandOptions.NEO4J_CONNECTION, config.getConfigValue(ConfigKeys.NEO4J_URI));
-      configValues.put(RabbitMQConsumer.MQ_HOST, config.getConfigValue(ConfigKeys.RABBITMQ_HOST));
-      configValues.put(RabbitMQConsumer.MQ_QUEUE, config.getConfigValue(ConfigKeys.RABBITMQ_NAME));
-      configValues.put(RabbitMQConsumer.MQ_USER, config.getConfigValue(ConfigKeys.RABBITMQ_USER_NAME));
-      configValues.put(RabbitMQConsumer.MQ_PASSWORD, config.getConfigValue(ConfigKeys.RABBITMQ_PASSWORD));
+      configValues.put(RabbitMQConsumer.MQ_HOST_KEY, config.getConfigValue(ConfigKeys.RABBITMQ_HOST));
+      configValues.put(RabbitMQConsumer.MQ_QUEUE_KEY, config.getConfigValue(ConfigKeys.RABBITMQ_NAME));
+      configValues.put(RabbitMQConsumer.MQ_USER_KEY, config.getConfigValue(ConfigKeys.RABBITMQ_USER_NAME));
+      configValues.put(RabbitMQConsumer.MQ_PASSWORD_KEY, config.getConfigValue(ConfigKeys.RABBITMQ_PASSWORD));
       // This is a future enhancement and enabled when other consumers have been added.
       //configValues.put(CommandOptions.CONSUMER_TYPE, config.getConfigValue(ConfigKeys.CONSUMER_TYPE));
     } catch (IOException e) {
@@ -105,10 +105,10 @@ public class Neo4jConnectorApplication {
     CommandLine commandLine = parser.parse(options, args);
 
     addCommandLineValue(commandLine, CommandOptions.INI_FILE);
-    addCommandLineValue(commandLine, RabbitMQConsumer.MQ_HOST);
-    addCommandLineValue(commandLine, RabbitMQConsumer.MQ_USER);
-    addCommandLineValue(commandLine, RabbitMQConsumer.MQ_PASSWORD);
-    addCommandLineValue(commandLine, RabbitMQConsumer.MQ_QUEUE);
+    addCommandLineValue(commandLine, RabbitMQConsumer.MQ_HOST_KEY);
+    addCommandLineValue(commandLine, RabbitMQConsumer.MQ_USER_KEY);
+    addCommandLineValue(commandLine, RabbitMQConsumer.MQ_PASSWORD_KEY);
+    addCommandLineValue(commandLine, RabbitMQConsumer.MQ_QUEUE_KEY);
     addCommandLineValue(commandLine, CommandOptions.CONSUMER_TYPE);
     addCommandLineValue(commandLine, CommandOptions.NEO4J_CONNECTION);
   }
@@ -124,8 +124,8 @@ public class Neo4jConnectorApplication {
     if (g2ConfigString != null && g2ConfigString.isEmpty()) {
       checkParameter(unsetParameters, CommandOptions.INI_FILE);
     }
-    checkParameter(unsetParameters, RabbitMQConsumer.MQ_HOST);
-    checkParameter(unsetParameters, RabbitMQConsumer.MQ_QUEUE);
+    checkParameter(unsetParameters, RabbitMQConsumer.MQ_HOST_KEY);
+    checkParameter(unsetParameters, RabbitMQConsumer.MQ_QUEUE_KEY);
 
     if (!unsetParameters.isEmpty()) {
       System.out.println("No configuration found for parameters: " + String.join(", ", unsetParameters));
