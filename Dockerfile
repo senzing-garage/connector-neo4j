@@ -21,10 +21,14 @@ ENV LD_LIBRARY_PATH=${SENZING_ROOT}/g2/lib:${SENZING_ROOT}/g2/lib/debian
 
 # Install java-17
 # This is a requirement for neo4j java client 5.0 and higher.
-RUN wget -qO - https://packages.adoptium.net/artifactory/api/gpg/key/public | apt-key add - \
- && echo "deb https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | tee /etc/apt/sources.list.d/adoptium.list \
- && apt-get update \
- && apt-get -y install temurin-17-jdk
+RUN mkdir -p /etc/apt/keyrings \
+ && wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public > /etc/apt/keyrings/adoptium.asc
+
+RUN echo "deb [signed-by=/etc/apt/keyrings/adoptium.asc] https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" >> /etc/apt/sources.list
+
+RUN apt update \
+ && apt install -y temurin-17-jdk \
+ && rm -rf /var/lib/apt/lists/*
 
 # Build "connector-neo4j.jar"
 
