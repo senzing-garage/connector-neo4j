@@ -1,5 +1,7 @@
 package com.senzing.neo4j.connector.service.graph;
 
+import javax.json.JsonObject;
+
 import com.senzing.listener.service.exception.ServiceSetupException;
 import com.senzing.neo4j.connector.service.graph.neo4j.Neo4jService;
 
@@ -14,7 +16,7 @@ public class GraphServiceFactory {
    * 
    * @throws ServiceSetupException
    */
-  static public GraphService generateGraphService(GraphType graphType, String config) throws ServiceSetupException {
+  static public GraphService generateGraphService(GraphType graphType, JsonObject config) throws ServiceSetupException {
 
     if (graphType == GraphType.neo4j) {
       return Neo4jService.generateNeo4jService(config);

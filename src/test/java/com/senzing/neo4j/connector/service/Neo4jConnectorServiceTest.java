@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import javax.json.Json;
+import javax.json.JsonObject;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -40,10 +42,7 @@ public class Neo4jConnectorServiceTest {
         return entityMessage;
       }
       @Mock
-      public void init(String iniFile) throws ServiceSetupException {
-      }
-      @Mock
-      public void removeEntity(long g2EntiyId) throws ServiceExecutionException {
+      public void init(JsonObject senzingConfig) throws ServiceSetupException {
       }
     };
     new MockUp<Neo4jConnection>() {
@@ -109,7 +108,7 @@ public class Neo4jConnectorServiceTest {
     };
 
     Neo4jConnectorService service = new Neo4jConnectorService();
-    service.init("{}");
+    service.init(Json.createObjectBuilder().build());
     service.processEntity(1L);
   }
 
@@ -130,7 +129,7 @@ public class Neo4jConnectorServiceTest {
     };
 
     try {
-      new Neo4jConnectorService().init("{}");
+      new Neo4jConnectorService().init(Json.createObjectBuilder().build());
       fail("Should have thrown an exception");
     } catch (ServiceSetupException e) {
       assertThat(e.getMessage(),
@@ -140,7 +139,7 @@ public class Neo4jConnectorServiceTest {
   }
 
   @Test
-  public void mainServiceithMissingUriConfig() throws ServiceExecutionException, ServiceSetupException {
+  public void mainServiceWithMissingUriConfig() throws ServiceExecutionException, ServiceSetupException {
     new MockUp<AppConfiguration>() {
       @Mock
       public String getConfigValue(String configParameter) {
@@ -155,7 +154,7 @@ public class Neo4jConnectorServiceTest {
       }
     };
     try {
-      new Neo4jConnectorService().init("{}");
+      new Neo4jConnectorService().init(Json.createObjectBuilder().build());
       fail("Should have thrown an exception");
     } catch (ServiceSetupException e) {
       assertThat(e.getMessage(),
@@ -179,7 +178,7 @@ public class Neo4jConnectorServiceTest {
     };
 
     try {
-      new Neo4jConnectorService().init("{}");
+      new Neo4jConnectorService().init(Json.createObjectBuilder().build());
       fail("Should have thrown an exception");
     } catch (ServiceSetupException e) {
       assertThat(e.getMessage(),
@@ -205,7 +204,7 @@ public class Neo4jConnectorServiceTest {
     };
 
     try {
-      new Neo4jConnectorService().init("{}");;
+      new Neo4jConnectorService().init(Json.createObjectBuilder().build());;
       fail("Should have thrown an exception");
     } catch (com.senzing.listener.service.exception.ServiceSetupException e) {
       assertThat(e.getMessage(), is(equalTo("Invalid graph database type specified: titan")));

@@ -4,8 +4,12 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Collections;
+import java.util.Objects;
 
 import javax.json.Json;
+import javax.json.JsonObjectBuilder;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
@@ -13,6 +17,7 @@ import javax.json.JsonReader;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.senzing.util.JsonUtilities;
 import com.senzing.listener.service.ListenerService;
 import com.senzing.listener.service.exception.ServiceExecutionException;
 import com.senzing.listener.service.exception.ServiceSetupException;
@@ -25,6 +30,10 @@ import com.senzing.neo4j.connector.data.g2.G2Entity;
 import com.senzing.neo4j.connector.service.graph.GraphService;
 import com.senzing.neo4j.connector.service.graph.GraphServiceFactory;
 import com.senzing.neo4j.connector.service.graph.GraphType;
+
+import static com.senzing.listener.service.ListenerService.*;
+import static com.senzing.listener.service.ListenerService.State.*;
+import static com.senzing.util.JsonUtilities.*;
 
 /**
  * This class handles interactions between G2 and graph database.
@@ -41,6 +50,8 @@ public class Neo4jConnectorService implements ListenerService {
   private G2Service g2Service;
   private boolean serviceUp;
 
+  private State state = UNINITIALIZED;
+
   private long totalCount;
   private long failedCount;
 
@@ -51,15 +62,15 @@ public class Neo4jConnectorService implements ListenerService {
    * @throws ServiceSetupException
    */
   @Override
-  public void init(String config) throws ServiceSetupException {
+  public void init(JsonObject config) throws ServiceSetupException {
+    this.setState(INITIALIZING);
     // Get configuration
     String g2IniFile = null;
     String graphDbType = null;
     String senzingConfig = System.getenv(EnvVariables.SENZING_ENGINE_CONFIGURATION_JSON);
     try {
-      JSONObject configObject = new JSONObject(config);
-      g2IniFile = configObject.optString(CommandOptions.INI_FILE);
-      graphDbType = configObject.optString(CommandOptions.GRAPH_TYPE);
+      g2IniFile = JsonUtilities.getString(config, CommandOptions.INI_FILE);
+      graphDbType = JsonUtilities.getString(config, CommandOptions.GRAPH_TYPE);
       AppConfiguration appConfig = new AppConfiguration();
       graphDbType = appConfig.getConfigValue(ConfigKeys.GRAPH_DATABASE_TYPE);
       if (g2IniFile == null || g2IniFile.isEmpty()) {
@@ -83,12 +94,18 @@ public class Neo4jConnectorService implements ListenerService {
       throw new ServiceSetupException(errorMessage.toString());
     }
 
-    g2Service = new G2Service();
+    JsonObjectBuilder job = Json.createObjectBuilder();
     if (g2IniFile != null && !g2IniFile.isEmpty()) {
-      g2Service.init(g2IniFile);
+      job.add(G2Service.G2_INIT_CONFIG_KEY, g2IniFile);
     } else {
-      g2Service.initWithG2Config(senzingConfig);
+      job.add(G2Service.G2_INIT_CONFIG_KEY, senzingConfig);
     }
+    job.add(G2Service.G2_MODULE_NAME_KEY, "Neo4jConnector");
+
+    JsonObject g2Config = job.build();
+
+    g2Service = new G2Service();
+    g2Service.init(g2Config);
 
     GraphType graphType;
     try {
@@ -103,6 +120,36 @@ public class Neo4jConnectorService implements ListenerService {
 
     totalCount = 0;
     failedCount = 0;
+    this.setState(AVAILABLE);
+  }
+
+  /**
+   * Implemented to return the statistics associated with this instance.
+   * 
+   * {@inheritDoc}
+   */
+  @Override
+  public synchronized Map<Statistic, Number> getStatistics() {
+      return Collections.emptyMap();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public synchronized State getState() {
+    return this.state;
+  }
+
+    /**
+   * Provides a means to set the {@link State} for this instance as a
+   * synchronized method that will notify all upon changing the state.
+   *
+   * @param state The {@link State} for this instance.
+   */
+  protected synchronized void setState(State state) {
+    Objects.requireNonNull(state,"State cannot be null");
+    this.state = state;
+    this.notifyAll();
   }
 
   /**
@@ -153,7 +200,7 @@ public class Neo4jConnectorService implements ListenerService {
    * @throws ServiceExecutionException
    */
   @Override
-  public void process(String message) throws ServiceExecutionException {
+  public void process(JsonObject message) throws ServiceExecutionException {
     // The message should be of format:
     // {
     //   "DATA_SOURCE":"TEST",
@@ -163,10 +210,8 @@ public class Neo4jConnectorService implements ListenerService {
     //   ]
     // }
     try {
-      JsonReader reader = Json.createReader(new StringReader(message));
-      JsonObject json = reader.readObject();
       // We are only interested in the entity ids from the AFFECTED_ENTITIES section.
-      JsonArray entities = json.getJsonArray(AFFECTED_ENTITIES_TAG);
+      JsonArray entities = message.getJsonArray(AFFECTED_ENTITIES_TAG);
       if (entities != null) {
         for (int i = 0; i < entities.size(); i++) {
           JsonObject entity = entities.getJsonObject(i);
@@ -202,8 +247,10 @@ public class Neo4jConnectorService implements ListenerService {
    */
   @Override
   public void destroy() {
+    this.setState(DESTROYING);
     g2Service.destroy();
     graphService.cleanUp();
+    this.setState(DESTROYED);
   }
 
   /**

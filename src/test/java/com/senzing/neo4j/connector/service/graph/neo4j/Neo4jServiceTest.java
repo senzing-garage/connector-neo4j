@@ -5,6 +5,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.Iterator;
 import java.util.Map;
+import javax.json.Json;
 
 import org.json.JSONException;
 import org.junit.Before;
@@ -36,7 +37,7 @@ public class Neo4jServiceTest {
       public void connect(String uri) throws GraphDatabaseConnectionException {
       }
     };
-    service  = Neo4jService.generateNeo4jService("{}");
+    service  = Neo4jService.generateNeo4jService(Json.createObjectBuilder().build());
     g2Entity = new G2Entity(entityMessage);
   }
 
@@ -155,7 +156,7 @@ public class Neo4jServiceTest {
         return null;
       }
     };
-    Neo4jService.generateNeo4jService("{}");
+    Neo4jService.generateNeo4jService(Json.createObjectBuilder().build());
   }
 
   @Test(expected=ServiceSetupException.class)
@@ -172,7 +173,7 @@ public class Neo4jServiceTest {
         throw new GraphDatabaseConnectionException("Failure");
       }
     };
-    Neo4jService.generateNeo4jService("{}");
+    Neo4jService.generateNeo4jService(Json.createObjectBuilder().build());
   }
 
 }

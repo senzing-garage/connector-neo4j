@@ -4,13 +4,13 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.senzing</groupId>
   <artifactId>neo4j-connector</artifactId>
-  <version>0.2.2</version>
+  <version>0.5.0</version>
   <packaging>jar</packaging>
   <name>G2 Neo4J Connector</name>
   <description>G2 Neo4J connector app</description>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
     <neo4j.version>5.12.0</neo4j.version>
     <jmockit.version>1.49</jmockit.version>
@@ -20,7 +20,12 @@
     <dependency>
       <groupId>com.senzing</groupId>
       <artifactId>senzing-listener</artifactId>
-      <version>0.3.1</version>
+      <version>0.5.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.senzing</groupId>
+      <artifactId>senzing-commons</artifactId>
+      <version>3.1.1</version>
     </dependency>
     <!-- tag::bolt-dependency[] -->
     <dependency>

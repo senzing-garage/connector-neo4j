@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.json.JsonObject;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -20,6 +22,9 @@ import com.senzing.neo4j.connector.graphdatabase.neo4j.CypherQuery;
 import com.senzing.neo4j.connector.graphdatabase.neo4j.CypherQueryGenerator;
 import com.senzing.neo4j.connector.graphdatabase.neo4j.Neo4jConnection;
 import com.senzing.neo4j.connector.service.graph.GraphService;
+import com.senzing.util.JsonUtilities;
+
+import static com.senzing.util.JsonUtilities.*;
 
 /**
  * This class services a Neo4j database.
@@ -36,7 +41,7 @@ public class Neo4jService implements GraphService {
   private static final String ENTITY_NODE_IDENTIFIER = "ENTITY";
   private static final String EMPTY_STRING = "";
 
-  public static Neo4jService generateNeo4jService(String config) throws ServiceSetupException {
+  public static Neo4jService generateNeo4jService(JsonObject config) throws ServiceSetupException {
     return new Neo4jService(config);
   }
 
@@ -45,7 +50,7 @@ public class Neo4jService implements GraphService {
    * 
    * @throws ServiceSetupException
    */
-  private Neo4jService(String config) throws ServiceSetupException {
+  private Neo4jService(JsonObject config) throws ServiceSetupException {
     // Get configuration
     String uri = null;
     try {
