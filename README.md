@@ -1,5 +1,17 @@
 # connector-neo4j
 
+If you are beginning your journey with
+[Senzing](https://senzing.com/),
+please start with
+[Senzing Quick Start guides](https://docs.senzing.com/quickstart/).
+
+You are in the
+[Senzing Garage](https://github.com/senzing-garage)
+where projects are "tinkered" on.
+Although this GitHub repository may help you understand an approach to using Senzing,
+it's not considered to be "production ready" and is not considered to be part of the Senzing product.
+Heck, it may not even be appropriate for your application of Senzing!
+
 ## Overview
 
 The Neo4j connector is an application, written in Java, which gathers information from Senzing and maps it into Neo4j graph database.  The connector reads messages containing Senzing information from a message queue (RabbitMQ or AWS SQS), derives from that data what entities in the Senzing repository are affected, gets the entity data, using the Senzing API, finds how the entities relate to other entities and inserts that data into a Neo4j database.  Note that this connector does not load source records into the Neo4j database.  It loads the Senzing entity information and each entity can be constructed from multiple source records.  If the source record data is desired, and how it relates to the Senzing entities, it will need to be loaded into the database prior to loading the Senzing entities.  In that case the records need to contain DATA_SOURCE and RECORD_ID fields, matching those used in Senzing repository for linking the Senzing entities back to source system records.
@@ -214,13 +226,13 @@ Budget 40 minutes to get the demonstration up-and-running, depending on CPU and 
 
 This repository assumes a working knowledge of:
 
-1. [Docker](https://github.com/Senzing/knowledge-base/blob/main/WHATIS/docker.md)
+1. [Docker](https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/docker.md)
 
 ### Configuration
 
 Configuration values specified by environment variable or command line parameter.
 
-- **[SENZING_G2_DIR](https://github.com/Senzing/knowledge-base/blob/main/lists/environment-variables.md#senzing_g2_dir)**
+- **[SENZING_G2_DIR](https://github.com/senzing-garage/knowledge-base/blob/main/lists/environment-variables.md#senzing_g2_dir)**
 
 ### Develop
 
@@ -228,15 +240,15 @@ Configuration values specified by environment variable or command line parameter
 
 The following software programs need to be installed:
 
-1. [git](https://github.com/Senzing/knowledge-base/blob/main/WHATIS/git.md)
-1. [make](https://github.com/Senzing/knowledge-base/blob/main/WHATIS/make.md)
-1. [jq](https://github.com/Senzing/knowledge-base/blob/main/WHATIS/jq.md)
-1. [docker](https://github.com/Senzing/knowledge-base/blob/main/WHATIS/docker.md)
+1. [git](https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/git.md)
+1. [make](https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/make.md)
+1. [jq](https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/jq.md)
+1. [docker](https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/docker.md)
 
 #### Clone repository
 
 For more information on environment variables,
-see [Environment Variables](https://github.com/Senzing/knowledge-base/blob/main/lists/environment-variables.md).
+see [Environment Variables](https://github.com/senzing-garage/knowledge-base/blob/main/lists/environment-variables.md).
 
 1. Set these environment variable values:
 
@@ -247,7 +259,7 @@ see [Environment Variables](https://github.com/Senzing/knowledge-base/blob/main/
     export GIT_REPOSITORY_DIR="${GIT_ACCOUNT_DIR}/${GIT_REPOSITORY}"
     ```
 
-1. Follow steps in [clone-repository](https://github.com/Senzing/knowledge-base/blob/main/HOWTO/clone-repository.md) to install the Git repository.
+1. Follow steps in [clone-repository](https://github.com/senzing-garage/knowledge-base/blob/main/HOWTO/clone-repository.md) to install the Git repository.
 
 #### Build docker image for development
 
@@ -270,10 +282,10 @@ see [Environment Variables](https://github.com/Senzing/knowledge-base/blob/main/
 1. Run docker container.
 
     1. :warning:
-       **macOS** - [File sharing](https://github.com/Senzing/knowledge-base/blob/main/HOWTO/share-directories-with-docker.md#macos)
+       **macOS** - [File sharing](https://github.com/senzing-garage/knowledge-base/blob/main/HOWTO/share-directories-with-docker.md#macos)
        must be enabled for the volumes.
     1. :warning:
-       **Windows** - [File sharing](https://github.com/Senzing/knowledge-base/blob/main/HOWTO/share-directories-with-docker.md#windows)
+       **Windows** - [File sharing](https://github.com/senzing-garage/knowledge-base/blob/main/HOWTO/share-directories-with-docker.md#windows)
        must be enabled for the volumes.
 
    When running the docker container the command line options need to be used.
