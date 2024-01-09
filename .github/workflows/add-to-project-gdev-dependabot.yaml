@@ -1,0 +1,24 @@
+name: add-to-project-gdev-dependabot.yaml
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+
+env:
+  CREATOR: ${{ github.event.pull_request.user.login }}
+
+jobs:
+  add-to-project:
+    name: Add dependabot pull request to project
+    runs-on: ubuntu-latest
+    steps:
+      - name: Assign pull request to project
+        env:
+          BOOL: ${{ contains( env.CREATOR, 'dependabot' ) }}
+        if: ${{ env.BOOL == 'true' }}
+        uses: actions/add-to-project@v0.5.0
+        with:
+          project-url: https://github.com/orgs/${{ env.SENZING_GITHUB_ACCOUNT_NAME }}/projects/${{ env.SENZING_PROJECT_GDEV }}
+          github-token: ${{ secrets.SENZING_GITHUB_ACCESS_TOKEN }}
