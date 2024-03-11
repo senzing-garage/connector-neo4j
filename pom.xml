@@ -20,7 +20,7 @@
     <dependency>
       <groupId>com.senzing</groupId>
       <artifactId>senzing-listener</artifactId>
-      <version>0.5.4</version>
+      <version>0.5.5</version>
     </dependency>
     <dependency>
       <groupId>com.senzing</groupId>
