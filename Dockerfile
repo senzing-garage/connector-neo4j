@@ -15,7 +15,7 @@ USER root
 
 LABEL Name="senzing/connector-neo4j-builder" \
   Maintainer="support@senzing.com" \
-  Version="0.5.2"
+  Version="0.5.3"
 
 # Set environment variables.
 
@@ -54,7 +54,7 @@ ENV REFRESHED_AT=2024-06-24
 
 LABEL Name="senzing/connector-neo4j" \
   Maintainer="support@senzing.com" \
-  Version="0.5.2"
+  Version="0.5.3"
 
 HEALTHCHECK CMD ["/app/healthcheck.sh"]
 
