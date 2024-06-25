@@ -9,6 +9,10 @@ FROM ${BASE_BUILDER_IMAGE} as builder
 
 ENV REFRESHED_AT=2024-06-24
 
+# Run as "root" for system installation.
+
+USER root
+
 LABEL Name="senzing/connector-neo4j-builder" \
   Maintainer="support@senzing.com" \
   Version="0.5.2"
