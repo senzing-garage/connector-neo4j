@@ -1,5 +1,9 @@
 # connector-neo4j
 
+## :no_entry: Deprecated
+
+[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
+
 If you are beginning your journey with
 [Senzing](https://senzing.com/),
 please start with
